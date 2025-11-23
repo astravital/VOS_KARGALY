@@ -24,34 +24,36 @@ The `FB_MOV01` block controls a valve actuator. It processes open, close, and st
 | `SFLT` | Bool | System Fault (SIL Safety) | |
 | `PAZ` | Bool | Emergency Protection Trip | |
 
-**Note on Limit Switches:** The block uses **Active High (1 = Position Reached)** logic at the function block inputs:
+**Note on Limit Switches:** The block supports both **Normally Open (NO)** and **Normally Closed (NC)** wiring:
 
-**Hardware Wiring Options:**
+**Standard NO Logic (Active = 1):**
+- `X21=0`, `X22=0` -> **Intermediate** Position (Valve in travel).
+- `X21=1`, `X22=0` -> Fully **Open**.
+- `X21=0`, `X22=1` -> Fully **Closed**.
+- `X21=1`, `X22=1` -> **Fault** after 2s (`GX`, `GSL`) - Invalid state.
 
-1. **Normally Open (NO) contacts** - Direct connection:
-   - Physical contact closed (pressed) = PLC Input 1 = FB Input 1
-   - Physical contact open = PLC Input 0 = FB Input 0
+**Fail-Safe NC Logic (Normally Closed contacts, typically used to detect power loss):**
+- `X21=1`, `X22=1` -> **Intermediate** Position (Both switches NOT pressed, contacts closed).
+- `X21=0`, `X22=1` -> Fully **Open** (Open switch pressed, contact opened).
+- `X21=1`, `X22=0` -> Fully **Closed** (Closed switch pressed, contact opened).
+- `X21=0`, `X22=0` -> **Power Loss / Wire Break** (Shows as Intermediate initially, then may trigger other alarms).
 
-2. **Normally Closed (NC) contacts** - **INVERTED before FB** (Recommended for Fail-Safe):
-   - Physical contact closed (NOT pressed) = PLC Input 1 → **Inverted** → FB Input 0
-   - Physical contact open (pressed) = PLC Input 0 → **Inverted** → FB Input 1
-   - **Power Loss / Wire Break** = PLC Input 0 → **Inverted** → FB Input 1 (both inputs HIGH)
-
-**Function Block Input Logic (after inversion if using NC):**
-
-| X21 | X22 | Valve State | Description |
-|---|---|---|---|
-| 0 | 0 | **Intermediate** | Normal travel position |
-| 1 | 0 | **Open** (`GO=1`) | At Open limit switch |
-| 0 | 1 | **Closed** (`GC=1`) | At Closed limit switch |
-| 1 | 1 | **Fault** (`GX=1`, `GSL=1`) after 2s | Both active - Invalid state or Power Loss (if NC wiring) |
-
-**Fault Detection:** If both `X21=1` AND `X22=1` persist for more than 2 seconds, timer `T_ON01` triggers:
+**Fault Detection:** If both `X21=1` AND `X22=1` persist for more than 2 seconds, the timer `T_ON01` triggers, setting:
 - `GX = 1` (Fault - Undefined State)
 - `GSL = 1` (Alarm - Both Limit Switches Active)
 
-**Use Case for NC + Inversion:**
-When using NC contacts with inversion, power loss or wire break causes both PLC inputs to go LOW (0), which after inversion becomes `X21=1, X22=1` at the FB, triggering the fault detection. This provides fail-safe monitoring of the wiring and power supply.
+This allows the block to detect wiring faults, stuck switches, or (when using NC contacts) simultaneous activation.
+
+**Truth Table - Limit Switch States:**
+
+| X21 | X22 | Valve State | Status Flags | Description |
+|---|---|---|---|---|
+| 0 | 0 | **Intermediate** | `GI=1`, `GO=0`, `GC=0` | Normal travel position (valve moving) |
+| 1 | 0 | **Open** | `GO=1`, `GC=0`, `GI=0` | At Open limit switch |
+| 0 | 1 | **Closed** | `GC=1`, `GO=0`, `GI=0` | At Closed limit switch |
+| 1 | 1 | **Fault** (after 2s) | `GX=1`, `GSL=1` | Invalid state - triggers fault detection timer `T_ON01` |
+
+**Note:** The `1,1` state starts timer `T_ON01`. If it persists for more than 2 seconds, the fault flags `GX` and `GSL` are set.
 
 ### Outputs
 
