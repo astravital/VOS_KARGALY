@@ -10,19 +10,27 @@ The `FB_MOV01` block controls a valve actuator. It processes open, close, and st
 
 ### Inputs
 
-| Name | Type | Description |
-|---|---|---|
-| `X21` | Bool | Open Limit Switch (1 = Active/Open) |
-| `X22` | Bool | Closed Limit Switch (1 = Active/Closed) |
-| `X43` | Bool | Torque Switch / Thermal Overload / Availability (1 = OK) |
-| `X23` | Bool | Remote/Local Selector (1 = Remote) |
-| `X15` | Bool | Stop Pushbutton / Interlock (Debounced) |
-| `EAO` | Bool | External Auto Open Command |
-| `EAC` | Bool | External Auto Close Command |
-| `EWO` | Bool | External Warning Open (Interlock?) |
-| `EWC` | Bool | External Warning Close (Interlock?) |
-| `SFLT` | Bool | System Fault (SIL Safety) |
-| `PAZ` | Bool | Emergency Protection Trip |
+| Name | Type | Description | Logic Note |
+|---|---|---|---|
+| `X21` | Bool | Open Limit Switch | 1 = Active (Open), 0 = Inactive |
+| `X22` | Bool | Closed Limit Switch | 1 = Active (Closed), 0 = Inactive |
+| `X43` | Bool | Torque Switch / Thermal Overload / Availability | 1 = OK |
+| `X23` | Bool | Remote/Local Selector | 1 = Remote |
+| `X15` | Bool | Stop Pushbutton / Interlock (Debounced) | |
+| `EAO` | Bool | External Auto Open Command | |
+| `EAC` | Bool | External Auto Close Command | |
+| `EWO` | Bool | External Warning Open (Interlock?) | |
+| `EWC` | Bool | External Warning Close (Interlock?) | |
+| `SFLT` | Bool | System Fault (SIL Safety) | |
+| `PAZ` | Bool | Emergency Protection Trip | |
+
+**Note on Limit Switches:** The block expects **Normally Open (NO)** logic, where a Logic '1' means the position is reached.
+- `X21=0`, `X22=0` -> **Intermediate** Position (Valve in travel or Power Loss).
+- `X21=1`, `X22=0` -> Fully **Open**.
+- `X21=0`, `X22=1` -> Fully **Closed**.
+- `X21=1`, `X22=1` -> **Fault** (Invalid State).
+
+If using **Normally Closed (NC)** contacts (Fail-Safe) where 0 = Active, the inputs must be inverted before this block or the logic modified.
 
 ### Outputs
 

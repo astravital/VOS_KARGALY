@@ -58,3 +58,4 @@ The extracted XML files contain structured data about:
 |---|---|---|
 | 2025-11-23 | Documentation | Created documentation for `FB_MOV01.scl` including inputs, outputs, logic flow, and state diagrams. |
 | 2025-11-23 | Bug Fix | Fixed typo in `FB_MOV01.md` input table formatting. |
+| 2025-11-23 | Documentation | Clarified Limit Switch logic (NO vs NC) in `FB_MOV01.md`. |
