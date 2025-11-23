@@ -22,5 +22,6 @@ The system is based on two Simatic S7-300 controllers:
 
 ## Documentation
 
-For more information about scripts and tools, see [Scripts Documentation](scripts.md).
+- [Scripts Documentation](scripts.md) - Information about scripts and tools
+- [Development Workflow](WORKFLOW.md) - Step-by-step workflow and processes used during development
 
