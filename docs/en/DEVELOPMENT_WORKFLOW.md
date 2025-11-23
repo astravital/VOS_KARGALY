@@ -57,3 +57,4 @@ The extracted XML files contain structured data about:
 | Date | Action | Description |
 |---|---|---|
 | 2025-11-23 | Documentation | Created documentation for `FB_MOV01.scl` including inputs, outputs, logic flow, and state diagrams. |
+| 2025-11-23 | Bug Fix | Fixed typo in `FB_MOV01.md` input table formatting. |

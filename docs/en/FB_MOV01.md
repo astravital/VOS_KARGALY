@@ -11,7 +11,7 @@ The `FB_MOV01` block controls a valve actuator. It processes open, close, and st
 ### Inputs
 
 | Name | Type | Description |
-|Ref |---|---|
+|---|---|---|
 | `X21` | Bool | Open Limit Switch (1 = Active/Open) |
 | `X22` | Bool | Closed Limit Switch (1 = Active/Closed) |
 | `X43` | Bool | Torque Switch / Thermal Overload / Availability (1 = OK) |
