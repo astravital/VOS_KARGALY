@@ -1,0 +1,110 @@
+﻿DATA_BLOCK "RSE_DIAGNOSTIC_STATUS_DB"
+TITLE = Report System Error Diagnostic Block
+{ S7_Optimized_Access := 'FALSE' }
+AUTHOR : SIMATIC
+FAMILY : RSEDIAG
+NAME : RSE7
+VERSION : 1.0
+NON_RETAIN
+// This DB is part of report system error and will be updated by the RSE FB.
+// It is an interface for support of system diagnosis via the CPU web server.
+   STRUCT 
+      Directory { ExternalVisible := 'False'} : Struct
+         D_Version { ExternalVisible := 'False'} : Word;   // Version that supports RSE
+         D_pGlobalState { ExternalVisible := 'False'} : Word;   // Byte offset to the start of the "GlobalState" section
+         D_pQuery { ExternalVisible := 'False'} : Word;   // Byte offset to the start of the "Query" section
+         D_pComponent { ExternalVisible := 'False'} : Word;   // Byte offset to the start of the "Component" section
+         D_pError { ExternalVisible := 'False'} : Word;   // Byte offset to the start of the "Error" section
+         D_pState { ExternalVisible := 'False'} : Word;   // Byte offset to the start of the "State" section
+         D_pAlarm { ExternalVisible := 'False'} : Word;   // Byte offset to the start of the "Alarm" section
+         D_pSubComponent { ExternalVisible := 'False'} : Word;   // Byte offset to the start of the "Subcomponent" section
+      END_STRUCT;
+      GlobalState { ExternalVisible := 'False'} : Struct
+         G_EventCount { ExternalVisible := 'False'} : Word;   // ID of the last event (counter)
+         G_StartReporting { ExternalVisible := 'False'} : Bool;   // Startup evaluation running
+      END_STRUCT;
+      Query { ExternalVisible := 'False'} : Struct
+         Q_ClientID_User { ExternalVisible := 'False'} : DWord;   // ID of the client
+         Q_ClientID_Intern { ExternalVisible := 'False'} : DWord;   // ID of the client (internal)
+         Q_WithSubComponent { ExternalVisible := 'False'} : Bool;   // With/without status of the underlying components (slower)
+         Q_SubComponentAlarm { ExternalVisible := 'False'} : Bool;   // AS-iMaster gibt AS-iSlave Alarme zurück
+         Q_Reserved2 { ExternalVisible := 'False'} : Bool;   // Reserved
+         Q_Reserved3 { ExternalVisible := 'False'} : Bool;   // Reserved
+         Q_Reserved4 { ExternalVisible := 'False'} : Bool;   // Reserved
+         Q_Reserved5 { ExternalVisible := 'False'} : Bool;   // Reserved
+         Q_Reserved6 { ExternalVisible := 'False'} : Bool;   // Reserved
+         Q_Reserved7 { ExternalVisible := 'False'} : Bool;   // Reserved
+         Q_Start { ExternalVisible := 'False'} : Bool;   // Start query
+         Q_Error { ExternalVisible := 'False'} : Byte;   // Internal error in query
+         Q_Reserved8 { ExternalVisible := 'False'} : Byte;   // Reserved
+      END_STRUCT;
+      Component { ExternalVisible := 'False'} : Struct
+         C_AddressMode { ExternalVisible := 'False'} : Byte;   // Addressing mode of the module
+         C_Reserved1 { ExternalVisible := 'False'} : Byte;   // Reserved
+         C_ComponentID { ExternalVisible := 'False'} : Word;   // Hardware ID of the component (internal)
+      END_STRUCT;
+      Error { ExternalVisible := 'False'} : Struct
+         E_ErrorNo { ExternalVisible := 'False'} : Word;   // Index of the requested/actual error
+         E_LastError { ExternalVisible := 'False'} : Bool;   // TRUE, if E_ErrorNo contains the indes of the last error, otherwise FALSE
+      END_STRUCT;
+      State { ExternalVisible := 'False'} : Struct
+         S_Hierarchy { ExternalVisible := 'False'} : Byte;   // Reserved
+         S_Periphery { ExternalVisible := 'False'} : Byte;   // Reserved
+         S_SupFault { ExternalVisible := 'False'} : Bool;   // The component is not obtainable
+         S_NotAvailable { ExternalVisible := 'False'} : Bool;   // The component does not exist
+         S_Faulty { ExternalVisible := 'False'} : Bool;   // The component is disrupted; the "Alarm" section is not empty
+         S_MoreErrors { ExternalVisible := 'False'} : Bool;   // There are more errors than RSE can store.
+         S_Maintenance1 { ExternalVisible := 'False'} : Bool;   // Maintenance required is indicated
+         S_Maintenance2 { ExternalVisible := 'False'} : Bool;   // Maintenance demand is indicated
+         S_Deactivated { ExternalVisible := 'False'} : Bool;   // The component was deactivated
+         S_Reserved2 { ExternalVisible := 'False'} : Bool;   // Reserved
+         S_SubFault { ExternalVisible := 'False'} : Bool;   // An underlying component is disrupted
+         S_SubMaintenance1 { ExternalVisible := 'False'} : Bool;   // Maintenance required is indicated for an underlying component
+         S_SubMaintenance2 { ExternalVisible := 'False'} : Bool;   // Maintenance demand is indicated for an underlying component
+         S_SubDeactivated { ExternalVisible := 'False'} : Bool;   // At least one lower-level component is disabled
+         S_Reserved4 { ExternalVisible := 'False'} : Bool;   // Reserved
+         S_Reserved5 { ExternalVisible := 'False'} : Bool;   // Reserved
+         S_Reserved6 { ExternalVisible := 'False'} : Bool;   // Reserved
+         S_Reserved7 { ExternalVisible := 'False'} : Bool;   // Reserved
+         S_TIAMS { ExternalVisible := 'False'} : DWord;   // Maintenance state of the component
+         S_TIAMSChannelExist { ExternalVisible := 'False'} : DWord;   // Maintenance state: Configured channels
+         S_TIAMSChannelOK { ExternalVisible := 'False'} : DWord;   // Maintenance State: Disrupted channels
+         S_ChannelCount { ExternalVisible := 'False'} : Word;   // Number of channels; Valid only when Q_WithSubComponent is set
+         S_ChannelVector { ExternalVisible := 'False'} : Array[0..255] of Bool;   // List of channels involved; Valid only when Q_WithSubComponent is set
+      END_STRUCT;
+      Alarm { ExternalVisible := 'False'} : Struct
+         A_ComponentID { ExternalVisible := 'False'} : Word;   // Hardware ID of the component (internal)
+         A_TextID1 { ExternalVisible := 'False'} : Word;   // ID of the first error text
+         A_TextLexikonID1 { ExternalVisible := 'False'} : Word;   // ID of the first error text lexicon
+         A_HelpTextLexikonID1 { ExternalVisible := 'False'} : Word;   // ID of the first help text lexicon
+         A_MapTextID { ExternalVisible := 'False'} : Word;   // ID of the first error text in the export file (HMI)
+         A_MapHelpTextID { ExternalVisible := 'False'} : Word;   // ID of the first help text in the export file (HMI)
+         A_TextID2 { ExternalVisible := 'False'} : Word;   // ID of the second error text
+         A_TextLexikonID2 { ExternalVisible := 'False'} : Word;   // ID of the second error text lexicon
+         A_HelpTextLexikonID2 { ExternalVisible := 'False'} : Word;   // ID of the second help text lexicon
+         A_MapTextID2 { ExternalVisible := 'False'} : Word;   // ID of the second error text in the export file (HMI)
+         A_MapHelpTextID2 { ExternalVisible := 'False'} : Word;   // ID of the second help text in the export file (HMI)
+         A_AlarmID { ExternalVisible := 'False'} : DWord;   // Message number
+         A_ValueCount { ExternalVisible := 'False'} : Word;   // Number of other occupied bytes
+         A_AssociatedValue { ExternalVisible := 'False'} : Array[1..6] of Word;   // Associated values of the message
+      END_STRUCT;
+      SubComponent { ExternalVisible := 'False'} : Struct
+         U_SubComponentCount { ExternalVisible := 'False'} : Word;   // Number of underlying components
+         U_SubComponentFault { ExternalVisible := 'False'} : Array[1..12] of Byte;   // List of status of subordinate components, 1 byte per component
+      END_STRUCT;
+   END_STRUCT;
+
+
+BEGIN
+   Directory.D_Version := WORD#16#0100;
+   Directory.D_pGlobalState := WORD#16#0010;
+   Directory.D_pQuery := WORD#16#0014;
+   Directory.D_pComponent := WORD#16#0020;
+   Directory.D_pError := WORD#16#0024;
+   Directory.D_pState := WORD#16#0028;
+   Directory.D_pAlarm := WORD#16#005A;
+   Directory.D_pSubComponent := WORD#16#0082;
+   Alarm.A_ValueCount := WORD#16#000C;
+
+END_DATA_BLOCK
+

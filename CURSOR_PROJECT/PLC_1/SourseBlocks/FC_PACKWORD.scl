@@ -1,0 +1,57 @@
+﻿FUNCTION "FC_PACKWORD" : Word
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      B0 : Bool;
+      B1 : Bool;
+      B2 : Bool;
+      B3 : Bool;
+      B4 : Bool;
+      B5 : Bool;
+      B6 : Bool;
+      B7 : Bool;
+      B8 : Bool;
+      B9 : Bool;
+      B10 : Bool;
+      B11 : Bool;
+      B12 : Bool;
+      B13 : Bool;
+      B14 : Bool;
+      B15 : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      GW : Word;
+      INDEX : Int;
+      BS : Array[0..16] of Bool;
+   END_VAR
+
+
+BEGIN
+	;    
+	    #GW:=0; //GW IN TO ZERO
+	    #BS[0]:=#B0;
+	    #BS[1]:=#B1;
+	    #BS[2]:=#B2;
+	    #BS[3]:=#B3;
+	    #BS[4]:=#B4;
+	    #BS[5]:=#B5;
+	    #BS[6]:=#B6;
+	    #BS[7]:=#B7;
+	    #BS[8]:=#B8;
+	    #BS[9]:=#B9;
+	    #BS[10]:=#B10;
+	    #BS[11]:=#B11;
+	    #BS[12]:=#B12;
+	    #BS[13]:=#B13;
+	    #BS[14]:=#B14;
+	    #BS[15]:=#B15;
+	    FOR #INDEX := 0 TO 15 BY 1 DO
+	        IF #BS[#INDEX]THEN
+	            #GW:=#GW OR (SHL(IN:=W#16#1,N:=#INDEX));  
+	        END_IF;
+	    END_FOR;       
+	        #FC_PACKWORD := #GW; //RESULT
+	    
+END_FUNCTION
+

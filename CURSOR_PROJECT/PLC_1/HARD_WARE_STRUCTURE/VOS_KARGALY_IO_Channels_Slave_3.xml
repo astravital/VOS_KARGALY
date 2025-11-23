@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Stations>
+  <Station Name="GSD device_2">
+    <Rack Name="Rack_0">
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+      <Module Name="" />
+    </Rack>
+  </Station>
+</Stations>

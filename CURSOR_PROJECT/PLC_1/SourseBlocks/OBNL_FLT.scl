@@ -1,0 +1,23 @@
+﻿ORGANIZATION_BLOCK "OBNL_FLT"
+TITLE = "Organization Block (OB) Not Loaded Fault"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+   VAR_TEMP 
+      OB85_EV_CLASS : Byte;   // 16#35 Event class 3
+      OB85_FLT_ID : Byte;   // 16#XX, Fault identification code
+      OB85_PRIORITY : Byte;   // Priority of OB Execution
+      OB85_OB_NUMBR : Byte;   // 85 (Organization block 85, OB85)
+      OB85_RESERVED_1 : Byte;   // Reserved for system
+      OB85_RESERVED_2 : Byte;   // Reserved for system
+      OB85_RESERVED_3 : Int;   // Reserved for system
+      OB85_ERR_EV_CLASS : Byte;   // Class of event causing error
+      OB85_ERR_EV_NUM : Byte;   // Number of event causing error
+      OB85_OB_PRIOR : Byte;   // Priority of OB causing error
+      OB85_OB_NUM : Byte;   // Number of OB causing error
+      OB85_DATE_TIME : Date_And_Time;   // Date and time OB85 started
+   END_VAR
+
+
+BEGIN
+END_ORGANIZATION_BLOCK
+

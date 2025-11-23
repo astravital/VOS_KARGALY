@@ -1,0 +1,1981 @@
+﻿FUNCTION "FC_PACKDWORD" : DWord
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      B0 : Bool;
+      B1 : Bool;
+      B2 : Bool;
+      B3 : Bool;
+      B4 : Bool;
+      B5 : Bool;
+      B6 : Bool;
+      B7 : Bool;
+      B8 : Bool;
+      B9 : Bool;
+      B10 : Bool;
+      B11 : Bool;
+      B12 : Bool;
+      B13 : Bool;
+      B14 : Bool;
+      B15 : Bool;
+      B16 : Bool;
+      B17 : Bool;
+      B18 : Bool;
+      B19 : Bool;
+      B20 : Bool;
+      B21 : Bool;
+      B22 : Bool;
+      B23 : Bool;
+      B24 : Bool;
+      B25 : Bool;
+      B26 : Bool;
+      B27 : Bool;
+      B28 : Bool;
+      B29 : Bool;
+      B30 : Bool;
+      B31 : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      GW : DWord;
+      INDEX : Int;
+      BS : Array[0..31] of Bool;
+   END_VAR
+
+
+BEGIN
+	;    
+	    #GW:=0; //GW IN TO ZERO
+	    #BS[0]:=#B0;
+	    #BS[1]:=#B1;
+	    #BS[2]:=#B2;
+	    #BS[3]:=#B3;
+	    #BS[4]:=#B4;
+	    #BS[5]:=#B5;
+	    #BS[6]:=#B6;
+	    #BS[7]:=#B7;
+	    #BS[8]:=#B8;
+	    #BS[9]:=#B9;
+	    #BS[10]:=#B10;
+	    #BS[11]:=#B11;
+	    #BS[12]:=#B12;
+	    #BS[13]:=#B13;
+	    #BS[14]:=#B14;
+	    #BS[15]:=#B15;
+	    #BS[16]:=#B16;
+	    #BS[17]:=#B17;
+	    #BS[18]:=#B18;
+	    #BS[19]:=#B19;
+	    #BS[20]:=#B20;
+	    #BS[21]:=#B21;
+	    #BS[22]:=#B22;
+	    #BS[23]:=#B23;
+	    #BS[24]:=#B24;
+	    #BS[25]:=#B25;
+	    #BS[26]:=#B26;
+	    #BS[27]:=#B27;
+	    #BS[28]:=#B28;
+	    #BS[29]:=#B29;
+	    #BS[30]:=#B30;
+	    #BS[31]:=#B31;
+	    FOR #INDEX := 0 TO 31 BY 1 DO
+	        IF #BS[#INDEX]THEN
+	            #GW:=#GW OR (SHL(IN:=DW#16#1,N:=#INDEX));  
+	        END_IF;
+	    END_FOR;       
+	        #FC_PACKDWORD := #GW; //RESULT
+	    
+END_FUNCTION
+
+FUNCTION "FC_DKBIN" : Void
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      GW : Bool;
+      DRK : Int;
+   END_VAR
+
+   VAR_IN_OUT 
+      RES : Bool;
+      DK : Int;
+   END_VAR
+
+
+BEGIN
+	
+	    IF #DK>=#DRK THEN //ЕСЛИ ЗНАЧЕНИЕ ЦИКЛА БОЛЬШЕ ИЛИ РАВНО МАКСИМАЛЬНОЬУ КОЛИЧЕСТВУ ЦИКЛОВ ТО..
+	        #RES:=#GW;//ПРИСВОИТЬ РЕЗУЛЬТАТУ ЗНАЧЕНИЕ БИНАРНОГО СИГНАЛА
+	        #DK:=0;//ОБНУЛИТЬ ЗНАЧЕНИЕ ЦИКЛА
+	    ELSE
+	        IF #RES <> #GW THEN //ЕСЛИ ВЫХОД БИНАРНОГО СИГНАЛА НЕ СОВПАДАЕТ СО ЗНАЧЕНИЕМ БИНАРНОГО СИГНАЛА ТО...
+	            #DK:=#DK+1;//УВЕЛИЧИТЬ ЗНАЧЕНИЕ ЦИКЛА НА 1 И СОХРАНИТЬ
+	        ELSE //ИНАЧЕ ОБНУЛИТЬ ЗНАЧЕНИЕ ЦИКЛА
+	            #DK:=0;    
+	        END_IF;        
+	    END_IF;
+	
+END_FUNCTION
+
+FUNCTION_BLOCK "FB_ANA11"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      XQ11 : Int;   // Значение с поля
+      XG24 : Bool;
+      SFLT : Bool;
+   END_VAR
+
+   VAR_OUTPUT 
+      QV : Real;   // Показание датчика
+      GL2 : Bool;
+      GL1 : Bool;
+      GL0 : Bool;
+      GH0 : Bool;
+      GH1 : Bool;
+      GH2 : Bool;
+      GVI : Bool;
+      GVX : Bool;
+   END_VAR
+
+   VAR 
+      GVX2 : Bool;
+      GVX3 : Bool;
+      GVHL : Bool;
+      GMW : Bool;
+      GMJ : Bool;
+      GVX1 : Bool;
+      GMZ1 : Bool;
+      GMZ2 : Bool;
+      GMZ3 : Bool;
+      GMZ4 : Bool;
+      AVL1 : Real;
+      AVH1 : Real;
+      GW1 : DWord;
+      X_J : Real;
+      X11_J : Real;
+      J_Last_Val : Real;
+      PHA : Int;
+      ST : Int;
+      CMD : Int;
+      KMJN : Bool;
+      KMWN : Bool;
+      ST1 : Int;
+      AVJ : Real := 45.0;
+      AL1 : Real := 30.0;
+      AH1 : Real := 60.0;
+      KMW : Bool;
+      KMJ : Bool;
+      AVL3 : Real;
+      AVL2 : Real := 10.0;
+      AVH2 : Real := 80.0;
+      AVH3 : Real := 100.0;
+      AVZ3 : Real := 40.0;
+      KMZ : Int := 4;
+      CODCBR : Real := -27648.0;
+      CODL : Real;
+      GIS : Real;
+      GIS_GVHL : Real := 1.0;
+      AL0 : Real := 35.0;
+      AH0 : Real := 55.0;
+      DEADZONE : Real;
+   END_VAR
+
+
+BEGIN
+	 
+	
+	(*Шаг 1  Установка  режимов  обработки  и  замены  параметров *)  
+	CASE #KMZ OF
+	    1 : #GMZ1:=1; #GMZ2:=0; #GMZ3:=0; #GMZ4:=0;
+	    2 : #GMZ2:=1; #GMZ1:=0; #GMZ3:=0; #GMZ4:=0;
+	    3 : #GMZ3:=1; #GMZ1:=0; #GMZ2:=0; #GMZ4:=0;
+	    4 : #GMZ4:=1; #GMZ1:=0; #GMZ2:=0; #GMZ3:=0;
+	END_CASE; 
+	 
+	CASE #PHA OF  
+	    7:  #GMJ:=1; #KMJ:=1; #CMD:=0;  (* УСТАНОВИТЬ РЕЖИМ ИМИТАЦИИ *)             
+	    8:  #GMJ:=0; #KMJN:=1; #CMD:=0; (* CБРОСИТЬ РЕЖИМ ИМИТАЦИИ *)               
+	    9:  #GMW:=1; #KMW:=1; #CMD:=0;  (* УСТАНОВИТЬ РЕЖИМ МАСКИРОВАНИЯ *)              
+	    10: #GMW:=0; #KMWN:=1; #CMD:=0; (* СБРОСИТЬ РЕЖИМ МАСКИРОВАНИЯ *)  
+	END_CASE;     
+	#PHA:=0;
+	
+	(* ОБРАБОТКА АНАЛОГОВОГО СИГНАЛА *)
+	//X11_J:=X11;
+	#X11_J:=INT_TO_REAL((#XQ11));
+	#X_J:=(#X11_J-#CODL)/(27648.0-#CODL)*(#AVH3-#AVL3)+#AVL3;
+	IF (#X11_J < #CODL-#GIS_GVHL) OR (#X11_J > 27648.0+#GIS_GVHL) THEN #GVHL:=1; END_IF;
+	IF (#X11_J > #CODL) & (#X11_J < 27648.0-#CODL) THEN #GVHL:=0; END_IF;
+	IF NOT #GMW THEN
+	    #GVX1:=#SFLT;  (*Неисправность  S 800  *)
+	    #GVX2:=#XG24;   (*Неисправность датчика *)
+	    #GVX3:=(NOT #XG24)&(#X11_J<=#CODCBR OR #X11_J>=32704.0); (*Обрыв, короткое замыкание*) 
+	END_IF;    
+	
+	(* ОБРАБОТКА РЕЖИМА ИМИТАЦИИ *)
+	IF #GMJ THEN 
+	    #QV:=#AVJ;
+	    #GVX:=0;
+	    #ST1:=2;   (*СТАТУС - В норме*)  
+	ELSE
+	    IF #GMW THEN  (* ОБРАБОТКА РЕЖИМА МАСКИРОВАНИЯ *)
+	        #QV:=#X_J;
+	        IF (ABS(#QV)<#DEADZONE) THEN
+	             #QV:=0.0;
+	        END_IF;
+	        #GVX:=1;
+	        #ST1:=2; (*СТАТУС - В норме*)   
+	    ELSE    
+	        IF #GVX1 OR #GVX2 OR #GVX3 OR #GVHL THEN   (* ОБРАБОТКА НЕИСПРАВНОСТЕЙ И РЕЖИМОВ ЗАМЕН *)   
+	            #ST1:=16; (*СТАТУС - Значение не контролируется*)
+	            IF #GMZ1 THEN #QV:=#AL1+(#AH1-#AL1)/2.0; END_IF;
+	            IF #GMZ2 THEN #QV:=#J_Last_Val; END_IF;
+	            IF #GMZ3 THEN #QV:=#AVZ3; END_IF;
+	            IF #GMZ4 THEN #QV:=#X_J;
+	                IF (ABS(#QV)<#DEADZONE) THEN   
+	                    #QV:=0.0;
+	                END_IF;
+	            END_IF;
+	            #GVX:=1; 
+	        ELSE
+	            #J_Last_Val:=#QV;   (* ТЕКУЩЕЕ ЗНАЧЕНИЕ АНАЛОГОВОГО ПАРАМЕТРА *)
+	            #QV:=#X_J;
+	            IF (ABS(#QV)<#DEADZONE) THEN   
+	                #QV:=0.0;
+	            END_IF;
+	            #GVX:=0;
+	            #ST1:=2; (*СТАТУС - В норме*) 
+	        END_IF;            
+	    END_IF;
+	END_IF; 
+	
+	(*IF NOT GMW THEN 9_04_2006 init - Vitaliy *)     
+	(* ОБРАБОТКА УСТАВОК *)                 
+	#GH0:=(((#QV>#AH0) OR #GH0&(#QV>(#AH0-#GIS)))) AND ( NOT #GMW);  (*Максимальное допустимое*)
+	#GH1:=(((#QV>#AH1) OR #GH1&(#QV>(#AH1-#GIS)))) AND (NOT #GMW);   (*Максимальное предупредительное*)
+	#GH2:=(((#QV>#AVH2) OR #GH2&(#QV>(#AVH2-#GIS)))) AND (NOT #GMW); (*Максимальное Аварийное*)
+	#GL0:=(((#QV<#AL0) OR #GL0&(#QV<(#AL0+#GIS)))) AND ( NOT #GMW);  (*Минимальное допустимое*)
+	#GL1:=(((#QV<#AL1) OR #GL1&(#QV<(#AL1+#GIS)))) AND (NOT #GMW);   (*Минимальное предупредительное*)
+	#GL2:=(((#QV<#AVL2) OR #GL2&(#QV<(#AVL2+#GIS)))) AND (NOT #GMW); (*Минимальное Аварийное*)
+	#GVI:=NOT(#GH0 OR #GL0 OR #GMW);  
+	             
+	(* ФОРМИРОВАНИЕ ТЕКУЩЕГО СТАТУСА *)
+	IF NOT #GMW THEN    
+	    IF(#ST1<>16) THEN   (* ЕСЛИ ЗНАЧЕНИЕ КОНТРОЛИРУЕТСЯ *)         
+	        IF(#GH2) THEN
+	        #ST1:=4;    (*СТАТУС - Значение максимальное аварийное*)
+	        ELSE
+	            IF(#GH1) THEN
+	            #ST1:=6;  (*СТАТУС - Значение максимальное предупр*)         
+	            ELSE
+	                IF(#GH0) THEN
+	                #ST1:=8;      (*СТАТУС - Значение максимальное  допустимое*)     
+	                ELSE 
+	                    IF(#GL2) THEN
+	                    #ST1:=14;      (*СТАТУС - Значение минимальное  аварийное*)     
+	                    ELSE
+	                        IF(#GL1) THEN
+	                        #ST1:=12;      (*СТАТУС - Значение минимальное предельное *)               
+	                        ELSE
+	                            IF(#GL0) THEN
+	                            #ST1:=10;      (*СТАТУС - Значение минимальное допустимое *)               
+	                            END_IF;
+	                        END_IF;
+	                    END_IF; 
+	                END_IF;
+	            END_IF;
+	        END_IF;   
+	    END_IF;
+	END_IF;
+	#ST:=#ST1; 
+	(* УПАКОВКА GW1 *) 
+	#GW1:="FC_PACKDWORD"(  B0:=#KMJ, 
+	        B1:=#KMJN, 
+	        B2:=#KMW, 
+	        B3:=#KMWN,
+	        B4:=0, 
+	        B5:=0, 
+	        B6:=#GMJ, 
+	        B7:=NOT #GMJ, 
+	        B8:=#GMW, 
+	        B9:=NOT #GMW, 
+	        B10:=0, 
+	        B11:=0, 
+	        B12:=0, 
+	        B13:=0, 
+	        B14:=#GVX, 
+	        B15:=#GVX1, 
+	        B16:=#GVX2, 
+	        B17:=#GVX3, 
+	        B18:=#GVHL, 
+	        B19:=#GL2, 
+	        B20:=#GL1, 
+	        B21:=#GH1, 
+	        B22:=#GH2, 
+	        B23:=#GL0, 
+	        B24:=#GH0, 
+	        B25:=0, 
+	        B26:=0, 
+	        B27:=#GMZ1, 
+	        B28:=#GMZ2, 
+	        B29:=#GMZ3, 
+	        B30:=#GMZ4, 
+	        B31:=0);                                                 
+	
+	(* СЧЕТЧИК И СБРОС КОМАНД *)                                      
+	IF(#CMD<10 AND (#KMJ OR #KMJN OR #KMW OR #KMWN)) THEN  
+	    #CMD:=#CMD+1;
+	ELSE
+	    #KMJ:=0;
+	    #KMJN:=0;
+	    #KMW:=0;
+	    #KMWN:=0;        
+	END_IF;                                                                                        
+	
+	
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "FB_MOV01"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      X21 : Bool;
+      X22 : Bool;
+      X43 : Bool;
+      X23 : Bool;
+      X15 : Bool;
+      EAO : Bool;
+      EAC : Bool;
+      EWO : Bool;
+      EWC : Bool;
+      SFLT : Bool;
+      PAZ : Bool;
+   END_VAR
+
+   VAR_OUTPUT 
+      Y31 : Bool;
+      Y32 : Bool;
+      Y33 : Bool;
+      GO : Bool;
+      GC : Bool;
+      GR : Bool;
+      GNO : Bool;
+      GNC : Bool;
+      GF : Bool;
+      WO : Bool;
+      WC : Bool;
+      GMD : Bool;
+   END_VAR
+
+   VAR 
+      PHA : Int := 3;
+      ST : Int;
+      MODE : Int;
+      TZ0 : Int := 50;
+      TZ1 : Int := 50;
+      TZ2 : Int := 50;
+      TZZ0 : Int;
+      TZZ1 : Int;
+      TZZ2 : Int;
+      GW1 : DWord;
+      GW2 : DWord;
+      T_01 : Time := T#5S;
+      T_02 : Time := T#2S;
+      T_03 : Time := T#5M;
+      T_04 : Time := T#5M;
+      T_05 : Time := T#2S;
+      T_06 : Time := T#2S;
+      T_07 : Time := T#2S;
+      T_ON01 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON02 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON03 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON04 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON05 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON06 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON07 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON08 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON09 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON10 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON11 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON12 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON13 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON14 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      KU : Bool;
+      WU : Bool;
+      J_RevOp : Bool;
+      J_RevCl : Bool;
+      J_AutSt : Bool;
+      J_ImitOp : Bool;
+      J_ImitCl : Bool;
+      J_ImitSt : Bool;
+      J_ImitRevOp : Bool;
+      J_ImitRevCl : Bool;
+      J_ImitAutSt : Bool;
+      KO : Bool;
+      KC : Bool;
+      KS : Bool;
+      WS : Bool;
+      WMJ : Bool;
+      GRL : Bool;
+      GRO : Bool;
+      GRC : Bool;
+      GI : Bool;
+      GX : Bool;
+      GAO : Bool;
+      GAC : Bool;
+      GWK : Bool;
+      GNO1 : Bool;
+      KMJ : Bool;
+      GNO2 : Bool;
+      GNO3 : Bool;
+      GNO4 : Bool;
+      GNC1 : Bool;
+      GNC2 : Bool;
+      GNC3 : Bool;
+      GNC4 : Bool;
+      GNS : Bool;
+      GYO : Bool;
+      GYC : Bool;
+      GRX : Bool;
+      GS2 : Bool;
+      GSL : Bool;
+      GYS : Bool;
+      GX1 : Bool;
+      GMJ : Bool;
+      T_QResCMD : Bool;
+      T_Q_GWK : Bool;
+      StartT_ResCMD : Bool;
+      StartT1 : Bool;
+      StartT2 : Bool;
+      StartT3 : Bool;
+      StartT4 : Bool;
+      StartT5 : Bool;
+      StartT6 : Bool;
+      StartT7 : Bool;
+      StartT8 : Bool;
+      StartT9 : Bool;
+      StartT10 : Bool;
+      StartT11 : Bool;
+      StartT12 : Bool;
+      StartT13 : Bool;
+      StartT14 : Bool;
+      J_X43 : Bool;
+      J_KO : Bool;
+      J_KC : Bool;
+      J_KS : Bool;
+      J_KMJ_GMK : Bool;
+      J_GR : Bool;
+      J_GMD : Bool;
+      JmpStep9 : Bool;
+      J_X15 : Bool;
+   END_VAR
+
+
+BEGIN
+	
+	        "FC_DKBIN"(GW :=#GWK, DRK := #TZ0, RES := #T_Q_GWK, DK := #TZZ0);        
+	        "FC_DKBIN"(GW :=#StartT_ResCMD, DRK := #TZ1, RES := #T_QResCMD, DK := #TZZ1);
+	        #T_ON01(IN := #StartT1, PT := #T_05);//Контроль установки флага "неопределенное состояния"
+	        #T_ON02(IN := #StartT2, PT := #T_01);//Контроль времени при реверсе на открытие
+	        #T_ON03(IN := #StartT3, PT := #T_01);//Контроль времени при реверсе на закрытие
+	        #T_ON04(IN := #StartT4, PT := #T_02);//Контроль схода с концевика при включении МП открытия
+	        #T_ON05(IN := #StartT5, PT := #T_03);//Контроль времени открытия
+	        #T_ON06(IN := #StartT6, PT := #T_06);//Контроль времени при не санкц пропадании сигнала с МП
+	        #T_ON07(IN := #StartT7, PT := #T_01);//Контроль времени включения МП открытия
+	        #T_ON08(IN := #StartT8, PT := #T_02);//Контроль схода с концевика при включении МП закрытия
+	        #T_ON09(IN := #StartT9, PT := #T_04);//Контроль времени закрытия
+	        #T_ON10(IN := #StartT10, PT := #T_06);//Контроль времени при не санкц пропадании сигнала с МП
+	        #T_ON11(IN := #StartT11, PT := #T_01);//Контроль времени включения МП закрытия
+	        #T_ON12(IN := #StartT12, PT := #T_01);//Контроль времени отключения МП открытия/закрытия
+	        #T_ON13(IN := #StartT13, PT := #T_03);//Контроль времени открытия/закрытия в режиме имитации
+	        #T_ON14(IN := #StartT14, PT := #T_07);//Контроль времени на сброс всех аварий
+	        IF #GAO OR #GAC THEN #PHA:=7; END_IF;
+	        CASE #PHA OF
+	            0:  #KC:=1;//ЗАКРЫТЬ
+	            1:  #KS:=1;//СТОП
+	            2:  #KO:=1;//ОТКРЫТЬ
+	            3:  #KC:=0; 
+	                #KS:=0; 
+	                #KO:=0;//СБРОС ВСЕХ КОМАНД
+	                #KU:=0;
+	            4:  #KMJ:=1;//ВКЛЮЧИТЬ РЕЖИМ ИМИТАЦИИ
+	            5:  #KMJ:=0;//ОТКЛЮЧИТЬ РЕЖИМ ИМИТАЦИИ
+	            6:  IF NOT #WU THEN 
+	                    #KU:=1;//ДЕБЛОКИРОВКА
+	                END_IF;  
+	        END_CASE;
+	        //СБРОС КОМАНД PHA
+	        #StartT_ResCMD:=#KC OR #KS OR #KO OR #KU OR #GAO OR #GAC; //ЕСЛИ ОТКРЫТЬ ИЛИ ЗАКРЫТЬ ИЛИ СТОП
+	        IF #T_QResCMD THEN //ЕСЛИ ОТРАБОТАЛ ТАЙМЕР ТО..
+	            #StartT_ResCMD:=0;//СБРОСИТЬ ТАЙМЕР
+	            #PHA:=3;//ПРОИЗВЕСТИ СБРОС ВСЕХ КОМАНД РНА
+	            #GAO:=0;
+	            #GAC:=0;
+	        END_IF;          
+	        //--------- Шаг 1 -----------
+	        //Установка режима управления
+	        #GWK:=#GWK & (NOT #T_Q_GWK);// ЕСЛИ НЕТ КОМАНДЫ И ТАЙМЕР НЕТ КОМАНДЫ ЕЩЕ НЕ ОТРАБОТАЛ
+	        "FC_DKBIN"(GW :=#X15, DRK := #TZ2, RES := #J_X15, DK := #TZZ2);
+	        #GMJ:=#KMJ & (NOT #WMJ OR #GMJ); 
+	        IF NOT #KMJ THEN 
+	            #J_ImitOp:=0; 
+	            #J_ImitCl:=0; 
+	            #J_ImitSt:=0; 
+	            #J_ImitRevOp:=0; 
+	            #J_ImitRevCl:=0; 
+	            #J_ImitAutSt:=0; 
+	        END_IF;
+	        //--------- Шаг 2 -----------
+	        //Контроль состояния
+	        #GMD:=#GMJ OR (NOT #GMJ &#X23);
+	        IF #GMJ THEN 
+	            #GX:=0; 
+	            #GF:=0; 
+	            #GNS:=0; 
+	            #GNC:=0; 
+	            #GNC1:=0; 
+	            #GNC2:=0; 
+	            #GNC3:=0; 
+	            #GNC4:=0; 
+	            #GNO:=0; 
+	            #GNO1:=0; 
+	            #GNO2:=0; 
+	            #GNO3:=0; 
+	            #GNO4:=0;
+	            #GI:=NOT (#GC OR #GO) OR #GI;
+	            #GR:=#GRO OR #GRC;
+	        ELSE 
+	            #GR:=#X43;
+	            #GRL:=#X43&(NOT #GMD); 
+	            #GNS:=#X43&#GNS;
+	            #GS2:=(#SFLT OR #J_X15)&#GS2 OR (NOT #SFLT & (#X21 & #X22)&#J_X15);
+	            #GX1:=#SFLT;
+	            #GF:=NOT #SFLT & #J_X15;
+	            IF #SFLT THEN
+	                #GNC1:=0; #GNC2:=0; #GNC3:=0; #GNC4:=0; 
+	                #GNO1:=0; #GNO2:=0; #GNO3:=0; #GNO4:=0;
+	                #GI:=0; #GO:=0; #GC:=0; #GX:=1; 
+	            ELSE
+	                IF NOT (#X21 OR #X22) THEN
+	                    #GI:=1; #GC:=0;  #GO:=0; 
+	                END_IF;
+	                IF #X22&(NOT #X21) THEN  
+	                    #GC:=1; 
+	                    #GI:=0;  
+	                    #GO:=0;
+	                END_IF;
+	                IF (NOT #X22)&#X21 THEN 
+	                    #GO:=1; 
+	                    #GC:=0;  
+	                    #GI:=0;
+	                END_IF;                
+	                IF NOT (#X21 & #X22) THEN
+	                    IF #T_ON14.Q THEN
+	                    #GX:=0;  
+	                    #GSL:=0;
+	                    #GNC:=0; #GNC1:=0; #GNC2:=0; #GNC3:=0; #GNC4:=0;
+	                    #GNO:=0; #GNO1:=0; #GNO2:=0; #GNO3:=0; #GNO4:=0;
+	                    #StartT14:=0;
+	                    END_IF;
+	                END_IF;                 
+	                IF NOT #GR & #J_GR & #GMD THEN
+	                   #GSL:=#X21 & #X22 & (NOT #GYS);
+	                END_IF;
+	                #StartT1:= #X21 AND #X22;        
+	            END_IF;
+	        END_IF;          
+	        #J_GR:=#GR;
+	        #J_GMD:=#GMD;
+	        //------------------- Шаг 3 ------------------
+	        //Команда открыть задвижку  
+	        IF (#KO OR #EAO) & NOT #J_KO & NOT #WO THEN
+	            #GAO:=#EAO OR #GAO;
+	            IF NOT #GMJ THEN
+	                #GNC:=0; #GNC1:=0; #GNC2:=0; #GNC3:=0; #GNC4:=0; 
+	                #GNO:=0; #GNO1:=0; #GNO2:=0; #GNO3:=0; #GNO4:=0;
+	                #J_AutSt:=#GR OR #J_AutSt;
+	                #J_RevOp:=#GR OR #J_RevOp;
+	                #Y31:=(NOT #GR) OR #Y31;
+	                #GYO:=(NOT #GR) OR #GYO;    
+	            END_IF;
+	            #J_ImitAutSt:=#GMJ&#GRC OR #J_ImitAutSt;
+	            #J_ImitRevOp:=#GMJ&#GRC OR #J_ImitRevOp;
+	            #J_ImitOp:=#GMJ&(NOT #GRC);
+	            #JmpStep9:=#GMJ;
+	        END_IF;
+	        IF (#KO OR #EAO) & NOT #J_KO THEN
+	            #GWK:=#WO;     
+	        END_IF;
+	        #J_KO:=#KO OR #EAO;
+	        #StartT2:=(#J_ImitRevOp & NOT #GRC) OR (#J_RevOp & NOT #GR);
+	        IF #T_ON02.Q THEN
+	            #StartT2:=0;
+	            #J_ImitOp:=#J_ImitRevOp OR #J_ImitOp;
+	            #JmpStep9:=#J_ImitOp;  
+	            #J_ImitRevOp:=(NOT #J_ImitRevOp & #J_ImitRevOp);
+	            IF #J_RevOp THEN
+	                #J_RevOp:=0;
+	                #Y31:=1;
+	                #GYO:=1;    
+	            END_IF;  
+	        END_IF;
+	        //------------------- Шаг 4 ------------------
+	        //Команда закрыть задвижку  
+	        IF (#KC OR #EAC)& NOT #J_KC & NOT #WC THEN
+	            #GAC:=#EAC OR #GAC;
+	            IF NOT #GMJ THEN
+	                #GNC:=0; #GNC1:=0; #GNC2:=0; #GNC3:=0; #GNC4:=0; 
+	                #GNO:=0; #GNO1:=0; #GNO2:=0; #GNO3:=0; #GNO4:=0;
+	                #J_AutSt:=#GR OR #J_AutSt;
+	                #J_RevCl:=#GR OR #J_RevCl;
+	                #Y32:=(NOT #GR) OR #Y32;
+	                #GYC:=(NOT #GR) OR #GYC;    
+	            END_IF;
+	            #J_ImitAutSt:=#GMJ&#GRO OR #J_ImitAutSt;
+	            #J_ImitRevCl:=#GMJ&#GRO OR #J_ImitRevCl;
+	            #J_ImitCl:=#GMJ&(NOT #GRO);
+	            #JmpStep9:=#GMJ;
+	        END_IF;
+	        IF (#KC OR #EAC) & NOT #J_KC THEN
+	            #GWK:=#WC;   
+	        END_IF;
+	        #J_KC:=#KC OR #EAC;
+	        #StartT3:=(#J_ImitRevCl & NOT #GRO) OR (#J_RevCl & NOT #GR);
+	        IF #T_ON03.Q THEN
+	            #StartT3:=0;
+	            #J_ImitCl:=#J_ImitRevCl OR #J_ImitCl;
+	            #JmpStep9:=#J_ImitCl;  
+	            #J_ImitRevCl:=(NOT #J_ImitRevCl & #J_ImitRevCl);
+	            IF #J_RevCl THEN
+	                #J_RevCl:=0;
+	                #Y32:=1;
+	                #GYC:=1;    
+	            END_IF;  
+	        END_IF;
+	        //------------------- Шаг 5 ------------------
+	        //Проверка выполнения команды "открыть"  
+	        IF NOT #GMJ THEN
+	            IF NOT (#X43 OR #GYO) THEN 
+	                #GRO:=0; 
+	                #GAO:=0; 
+	            END_IF; 
+	            #StartT4:=#GYO&#GRO&#X43&#GC;
+	            #StartT5:=#GYO&#GRO&#X43&(NOT #GC)&(NOT #GO);
+	            IF #GYO&#GRO&#X43&(NOT #GC)&#GO OR #GYO&#GRO&(NOT #X43)&#GO OR #GYO&(NOT #GRO)&#X43  THEN 
+	                #Y31:=0; 
+	            END_IF;
+	            IF #GYO&#GRO&#X43&(NOT #GC)&#GO OR #GYO&#GRO&(NOT #X43)&#GO THEN 
+	                #GYO:=0; 
+	            END_IF;
+	            #GRO:= #GYO &(NOT #GRO)&#X43 OR #GRO;      
+	            #StartT6:=#GYO&#GRO&(NOT #X43)&(NOT #GO);
+	            #StartT7:=#GYO&(NOT #GRO)&(NOT #X43);      
+	            //------------------- Шаг 6 ------------------
+	            //Проверка выполнения команды "закрыть"  
+	            IF NOT (#X43 OR #GYC) THEN 
+	                #GRC:=0; #GAC:=0; 
+	            END_IF; 
+	            #StartT8:=#GYC&#GRC&#X43&#GO;
+	            #StartT9:=#GYC&#GRC&#X43&(NOT #GO)&(NOT #GC);
+	            IF #GYC&#GRC&#X43&(NOT #GO)&#GC OR #GYC&#GRC&(NOT #X43)&#GC OR #GYC&(NOT #GRC)&#X43  THEN 
+	                #Y32:=0; 
+	            END_IF;
+	            IF #GYC&#GRC&#X43&(NOT #GO)&#GC OR #GYC&#GRC&(NOT #X43)&#GC THEN 
+	                #GYC:=0; 
+	            END_IF;
+	            #GRC:= #GYC &(NOT #GRC)&#X43 OR #GRC;      
+	            #StartT10:=#GYC&#GRC&(NOT #X43)&(NOT #GC);
+	            #StartT11:=#GYC&(NOT #GRC)&(NOT #X43);
+	        END_IF;      
+	        //------------------- Шаг 7 ------------------
+	        //Команда стоп задвижки  
+	        IF #KS & NOT #J_KS & (NOT #WS) OR #J_AutSt THEN     
+	            #J_ImitSt:=#GMJ OR #J_ImitSt; #JmpStep9:=#GMJ;
+	            #J_AutSt:=NOT #J_AutSt & #J_AutSt;
+	            IF NOT #GMJ THEN 
+	                #GYO:=0; #GYC:=0; #GYS:=1; #GNS:=0; #Y33:=1;     
+	            END_IF;     
+	        END_IF;
+	        //------------------- Шаг 8 ------------------
+	        //Проверка выполнения команды "стоп"  
+	        IF NOT #GMJ THEN
+	            #StartT12:=#GYS&#X43;
+	            #GYS:=NOT(#GYS&(NOT #X43))&#GYS;
+	            #Y33:=NOT(#Y33&(NOT #X43))&#Y33;
+	            IF #X43 & (NOT #J_X43) & (NOT (#GMJ OR #GYC OR #GYO OR #PAZ))&#GMD THEN
+	                #J_X43:=1;
+	                #GYS:=1; #Y33:=1; 
+	                #GRX:=1; 
+	            END_IF; 
+	            #J_X43:=#X43;
+	            #GRX:=#X43&#GRX;
+	        END_IF; 
+	        //------------------- Шаг 9 ------------------
+	        //Управление в режиме имитации  
+	        IF #JmpStep9 THEN
+	            #JmpStep9:=0;
+	            #StartT13:=(#J_ImitOp & (NOT #J_ImitCl) & (NOT #GO)) OR ((NOT #J_ImitOp) & (#J_ImitCl) & (NOT #GC));
+	            IF #J_ImitOp & (NOT #J_ImitCl) & (NOT #GO) THEN
+	                #GI:=1; #GRO:=1; #GC:=0;
+	            END_IF;
+	            IF #J_ImitCl & (NOT #J_ImitOp) & (NOT #GC) THEN
+	                #GI:=1; #GRC:=1; #GO:=0;
+	            END_IF;
+	            IF (NOT(#J_ImitOp OR #J_ImitCl) OR #J_ImitOp & (NOT #J_ImitCl) & (NOT #GO) OR #J_ImitCl & (NOT #J_ImitOp) & (NOT #GC)) & (#J_ImitAutSt OR #J_ImitSt) THEN
+	                IF #J_ImitSt THEN 
+	                    #J_ImitRevOp:=0; 
+	                    #J_ImitRevCl:=0; 
+	                END_IF;
+	                #GRO:=0; #GRC:=0; #J_ImitOp:=0; #J_ImitCl:=0; #J_ImitSt:=0; #J_ImitAutSt:=0;
+	            END_IF;
+	        END_IF;        
+	        //------------------- Шаг 10 ------------------
+	        //Вычисление масок команд управления-----*)
+	        #WO:=#GO OR #GRO OR #GYO OR #EWO OR (#GMJ&(#J_ImitRevOp OR #J_ImitRevCl)) OR ((NOT #GMJ)&((NOT #GMD) OR #GF OR #GX OR #J_RevOp OR #J_RevCl OR #SFLT OR #PAZ)) OR #KC OR #KS;
+	        #WC:=#GC OR #GRC OR #GYC OR #EWC OR (#GMJ&(#J_ImitRevOp OR #J_ImitRevCl)) OR ((NOT #GMJ)&((NOT #GMD) OR #GF OR #GX OR #J_RevOp OR #J_RevCl OR #SFLT OR #PAZ)) OR #KO OR #KS;
+	        #WS:=#GMD &(NOT #GMJ)& NOT(#GRO OR #GRC) OR NOT(#GRO OR #GRC)& #GMJ OR #GF OR #PAZ OR (NOT #GMD) OR #KO OR #KC;
+	        #WMJ:=#GMJ OR #GR OR #GYO OR #GYC OR #GYS;
+	        //------------------- Шаг 11 ------------------
+	        //Отработка таймеров
+	        IF #T_ON01.Q THEN  //Контроль установки флага "неопределенное состояние"
+	            #StartT1:=0;
+	            #GI:=0; #GO:=0; #GC:=0; #GX:=1;
+	        END_IF;
+	        IF #T_ON04.Q THEN  //Контроль схода с концевика при включении МП открытия
+	            #StartT4:=0; #GNO2:=1; #GNO:=1; #GYS:=1; #Y33:=1; #Y31:=0; #GYO:=0;
+	        END_IF;
+	        IF #T_ON05.Q THEN //Контроль времени открытия
+	            #StartT5:=0; #GNO4:=1; #GNO:=1; #GYS:=1; #Y33:=1; #Y31:=0; #GYO:=0;
+	        END_IF;
+	        IF #T_ON06.Q THEN //Контроль времени при не санкц пропадании сигнала с МП 
+	            #StartT6:=0; #GNO3:=1; #GNO:=1; #GYS:=1; #Y33:=1; #Y31:=0; #GYO:=0;
+	        END_IF;
+	        IF #T_ON07.Q THEN //Контроль времени включения МП открытия
+	            #StartT7:=0; #GNO1:=1; #GNO:=1; #GYS:=1; #Y33:=1; #Y31:=0; #GYO:=0;
+	        END_IF;
+	        IF #T_ON08.Q THEN //Контроль схода с концевика при включении МП закрытия
+	            #StartT8:=0; #GNC2:=1; #GNC:=1; #GYS:=1; #Y33:=1; #Y32:=0; #GYC:=0;
+	        END_IF;
+	        IF #T_ON09.Q THEN //Контроль времени закрытия
+	            #StartT9:=0; #GNC4:=1; #GNC:=1; #GYS:=1; #Y33:=1; #Y32:=0; #GYC:=0;
+	        END_IF;
+	        IF #T_ON10.Q THEN //Контроль времени при не санкц пропадании сигнала с МП 
+	            #StartT10:=0; #GNC3:=1; #GNC:=1; #GYS:=1; #Y33:=1; #Y32:=0; #GYC:=0;
+	        END_IF;
+	        IF #T_ON11.Q THEN //Контроль времени включения МП закрытия
+	            #StartT11:=0; #GNC1:=1; #GNC:=1; #GYS:=1; #Y33:=1; #Y32:=0; #GYC:=0;
+	        END_IF;
+	        IF #T_ON12.Q THEN
+	            #StartT12:=0; #GNS:=1; #J_RevOp:=0; #J_RevCl:=0; #GYS:=0; #Y33:=0;    
+	        END_IF;
+	        IF #T_ON13.Q THEN
+	            #StartT13:=0;
+	            #GO:=#J_ImitOp OR #GO;
+	            #GC:=#J_ImitCl OR #GC;
+	            #GRO:=0; #GRC:=0; #GI:=0; #J_ImitOp:=0; #J_ImitCl:=0;
+	            IF #J_ImitSt THEN 
+	                #J_ImitRevOp:=0; #J_ImitRevCl:=0; #J_ImitSt:=0; #J_ImitAutSt:=0;    
+	            END_IF;
+	        END_IF;   
+	        #WU:=NOT ( #GX OR #GX1 OR #GF OR #GNO OR #GNC OR #GNS);
+	        IF #KU THEN 
+	            #GX:=0;#GSL:=0; #GNC:=0;#GNO:=0;#GF:=0;#GX1:=0;
+	            #GNC1:=0; #GNC2:=0; #GNC3:=0; #GNC4:=0;
+	            #GNO1:=0; #GNO2:=0; #GNO3:=0; #GNO4:=0;
+	        END_IF;
+	        //------------------- Шаг 12 ------------------
+	        //Упаковка
+	        #GW1:="FC_PACKDWORD"(B0 := #KC
+	                         ,B1 := #KS
+	                         ,B2 := #KO
+	                         ,B3 := NOT #GMD
+	                         ,B4 := #GMD
+	                         ,B5 := #GAO
+	                         ,B6 := #GAC
+	                         ,B7 := #GC
+	                         ,B8 := #GO
+	                         ,B9 := #GI
+	                         ,B10:= #GX
+	                         ,B11:= NOT #GX1
+	                         ,B12:= #GX1
+	                         ,B13:= #GRC
+	                         ,B14:= #GRO
+	                         ,B15:= #GRL
+	                         ,B16:= NOT #GMJ 
+	                         ,B17:= #GMJ
+	                         ,B18:= NOT #GF
+	                         ,B19:= #GF
+	                         ,B20:= NOT #GWK
+	                         ,B21:= #GWK
+	                         ,B22:= NOT #GNO1
+	                         ,B23:= #GNO1  
+	                         ,B24:= NOT #GNO2
+	                         ,B25:= #GNO2
+	                         ,B26:= NOT #GNO3
+	                         ,B27:= #GNO3
+	                         ,B28:= NOT #GNO4 
+	                         ,B29:= #GNO4
+	                         ,B30:= NOT #GNC1 
+	                         ,B31:= #GNC1); 
+	                                           
+	        #GW2:="FC_PACKDWORD"(B0 := NOT #GNC2
+	                         ,B1 := #GNC2
+	                         ,B2 := NOT #GNC3
+	                         ,B3 := #GNC3
+	                         ,B4 := NOT #GNC4
+	                         ,B5 := #GNC4 
+	                         ,B6 := NOT #GNS
+	                         ,B7 := #GNS
+	                         ,B8 := #GSL
+	                         ,B9 := #GS2 
+	                         ,B10:= #GRX
+	                         ,B11:= #WO
+	                         ,B12:= #WC
+	                         ,B13:= #WS
+	                         ,B14:= #WMJ
+	                         ,B15:= #WU
+	                         ,B16:= 0
+	                         ,B17:= 0
+	                         ,B18:= 0
+	                         ,B19:= 0
+	                         ,B20:= 0
+	                         ,B21:= 0
+	                         ,B22:= 0
+	                         ,B23:= 0
+	                         ,B24:= 0
+	                         ,B25:= 0
+	                         ,B26:= 0
+	                         ,B27:= 0
+	                         ,B28:= 0
+	                         ,B29:= 0
+	                         ,B30:= 0
+	                         ,B31:= 0);
+	        //------------------- Шаг 13 ------------------
+	        //Определяем состояние задвижки
+	        IF #GF THEN 
+	            #ST:=12;
+	            ELSE
+	        IF #GRL OR #GRO THEN 
+	            #ST:=6;
+	        ELSE
+	            IF #GRL OR #GRC THEN 
+	                #ST:=10;
+	            ELSE
+	                IF #GI THEN 
+	                    #ST:=4;
+	                ELSE
+	                    IF #GC THEN 
+	                        #ST:=2;
+	                    ELSE
+	                        IF #GO THEN 
+	                            #ST:=8;
+	                        ELSE
+	                            IF #GX OR #GF THEN 
+	                                #ST:=12;
+	                            END_IF;
+	                        END_IF;
+	                    END_IF;
+	                END_IF;
+	            END_IF;
+	        END_IF;
+	        END_IF;
+	        IF #GMJ THEN
+	            #MODE:=1;
+	            #ST:=#ST+24;//в режиме имитации
+	        ELSE
+	        //местный режим
+	            IF (NOT #GMD AND NOT ( #GX OR #GX1 OR #GF OR #GNO OR #GNC OR #GNS)) AND #ST > 0 THEN 
+	                    #ST:=#ST+12;
+	            END_IF;
+	        //авария
+	            IF ( #GX OR  #GF OR #GNO OR #GNC OR #GNS) AND NOT #GX1 THEN 
+	                #ST:=#ST+36;
+	            END_IF;
+	        //sil2
+	            IF #GX1 THEN 
+	                #ST:=#ST+48;
+	            END_IF;
+	            IF (#GMD) THEN 
+	                #MODE:=2; 
+	            ELSE  
+	                #MODE:=0;
+	            END_IF;
+	        END_IF;     
+	//Таймер для сброса аварий
+	IF #GNC OR #GNC1 OR #GNC2 OR #GNC3 OR #GNC4 OR #GNO OR #GNO1 OR #GNO2 OR #GNO3 OR #GNO4 OR 
+	   #GX OR #GSL THEN
+	   #StartT14:=1;
+	END_IF;
+	
+END_FUNCTION_BLOCK
+
+DATA_BLOCK "DB_FL_01_LS_450"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+"FB_ANA11"
+
+BEGIN
+
+END_DATA_BLOCK
+
+DATA_BLOCK "DB_MOV_37"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+"FB_MOV01"
+
+BEGIN
+
+END_DATA_BLOCK
+
+FUNCTION "FC_ANA_Ust" : Void
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+
+BEGIN
+	
+	
+	"DB_FL_01_LS_450".AL1:=-9999.9;
+	"DB_FL_01_LS_450".AH1:=9999.9;
+	"DB_FL_01_LS_450".AVL2:=-9999.9;
+	"DB_FL_01_LS_450".AVH2:=9999.9;
+	"DB_FL_01_LS_450".AVL3:=4.0;
+	"DB_FL_01_LS_450".AVH3 := 20.0;
+	
+	
+	
+	(*
+	//DB_ANA_MULTI.MP_01_PIT02.AL1:=0.0;
+	//DB_ANA_MULTI.MP_01_PIT02.AH1:=16.0;
+	//DB_ANA_MULTI.MP_01_PIT02.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_01_PIT02.AVH2:=16.0;
+	//DB_ANA_MULTI.MP_01_PIT02.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_01_PIT02.AVH3:=16.0;
+	
+	//DB_ANA_MULTI.MP_01_PIT03.AL1:=0.0;
+	//DB_ANA_MULTI.MP_01_PIT03.AH1:=63.0;
+	//DB_ANA_MULTI.MP_01_PIT03.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_01_PIT03.AVH2:=63.0;
+	//DB_ANA_MULTI.MP_01_PIT03.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_01_PIT03.AVH3:=63.0;
+	
+	//DB_ANA_MULTI.MP_01_TT_09.AL1:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_09.AH1:=80.0;
+	//DB_ANA_MULTI.MP_01_TT_09.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_09.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_01_TT_09.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_09.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_01_TT_10.AL1:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_10.AH1:=80.0;
+	//DB_ANA_MULTI.MP_01_TT_10.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_10.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_01_TT_10.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_10.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_01_TT_13.AL1:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_13.AH1:=80.0;
+	//DB_ANA_MULTI.MP_01_TT_13.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_13.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_01_TT_13.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_13.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_01_TT_11.AL1:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_11.AH1:=80.0;
+	//DB_ANA_MULTI.MP_01_TT_11.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_11.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_01_TT_11.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_11.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_01_TT_12.AL1:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_12.AH1:=80.0;
+	//DB_ANA_MULTI.MP_01_TT_12.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_12.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_01_TT_12.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_01_TT_12.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_01_VT_01.AL1:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_01.AH1:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_01.AVH2:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_01.AVH3:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_01.GIS:=0.1;
+	//DB_ANA_MULTI.MP_01_VT_01.GIS_GVHL:=0.1;
+	
+	//DB_ANA_MULTI.MP_01_VT_02.AL1:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_02.AH1:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_02.AVH2:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_02.AVH3:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_02.GIS:=0.1;
+	//DB_ANA_MULTI.MP_01_VT_02.GIS_GVHL:=0.1;
+	
+	//DB_ANA_MULTI.MP_01_VT_03.AL1:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_03.AH1:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_03.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_03.AVH2:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_03.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_03.AVH3:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_03.GIS:=0.1;
+	//DB_ANA_MULTI.MP_01_VT_03.GIS_GVHL:=0.1;
+	
+	//DB_ANA_MULTI.MP_01_VT_04.AL1:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_04.AH1:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_04.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_04.AVH2:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_04.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_01_VT_04.AVH3:=20.0;
+	//DB_ANA_MULTI.MP_01_VT_04.GIS:=0.1;
+	//DB_ANA_MULTI.MP_01_VT_04.GIS_GVHL:=0.1;
+	
+	//DB_ANA_MULTI.MP_02_PIT01.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_PIT01.AH1:=4.0;
+	//DB_ANA_MULTI.MP_02_PIT01.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_PIT01.AVH2:=4.0;
+	//DB_ANA_MULTI.MP_02_PIT01.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_PIT01.AVH3:=4.0;
+	
+	//DB_ANA_MULTI.MP_02_PIT02.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_PIT02.AH1:=16.0;
+	//DB_ANA_MULTI.MP_02_PIT02.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_PIT02.AVH2:=16.0;
+	//DB_ANA_MULTI.MP_02_PIT02.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_PIT02.AVH3:=16.0;
+	
+	
+	//DB_ANA_MULTI.MP_02_PIT03.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_PIT03.AH1:=63.0;
+	//DB_ANA_MULTI.MP_02_PIT03.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_PIT03.AVH2:=63.0;
+	//DB_ANA_MULTI.MP_02_PIT03.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_PIT03.AVH3:=63.0;
+	
+	//DB_ANA_MULTI.MP_02_TT_09.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_09.AH1:=80.0;
+	//DB_ANA_MULTI.MP_02_TT_09.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_09.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_02_TT_09.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_09.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_02_TT_10.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_10.AH1:=80.0;
+	//DB_ANA_MULTI.MP_02_TT_10.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_10.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_02_TT_10.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_10.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_02_TT_13.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_13.AH1:=80.0;
+	//DB_ANA_MULTI.MP_02_TT_13.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_13.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_02_TT_13.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_13.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_02_TT_11.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_11.AH1:=80.0;
+	//DB_ANA_MULTI.MP_02_TT_11.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_11.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_02_TT_11.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_11.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_02_TT_12.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_12.AH1:=80.0;
+	//DB_ANA_MULTI.MP_02_TT_12.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_12.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_02_TT_12.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_TT_12.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_02_VT_01.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_01.AH1:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_01.AVH2:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_01.AVH3:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_01.GIS:=0.1;
+	//DB_ANA_MULTI.MP_02_VT_01.GIS_GVHL:=1.0;
+	
+	//DB_ANA_MULTI.MP_02_VT_02.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_02.AH1:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_02.AVH2:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_02.AVH3:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_02.GIS:=0.1;
+	//DB_ANA_MULTI.MP_02_VT_02.GIS_GVHL:=0.1;
+	
+	//DB_ANA_MULTI.MP_02_VT_03.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_03.AH1:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_03.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_03.AVH2:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_03.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_03.AVH3:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_03.GIS:=0.1;
+	//DB_ANA_MULTI.MP_02_VT_03.GIS_GVHL:=0.1;
+	
+	//DB_ANA_MULTI.MP_02_VT_04.AL1:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_04.AH1:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_04.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_04.AVH2:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_04.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_02_VT_04.AVH3:=20.0;
+	//DB_ANA_MULTI.MP_02_VT_04.GIS:=0.1;
+	//DB_ANA_MULTI.MP_02_VT_04.GIS_GVHL:=0.1;
+	
+	//DB_ANA_MULTI.MP_00_LT_01.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_LT_01.AH1:=2600.0;
+	//DB_ANA_MULTI.MP_00_LT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_LT_01.AVH2:=2800.0;
+	//DB_ANA_MULTI.MP_00_LT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_LT_01.AVH3:=4000.0;
+	
+	//DB_ANA_MULTI.MP_00_LT_02.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_LT_02.AH1:=2600.0;
+	//DB_ANA_MULTI.MP_00_LT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_LT_02.AVH2:=2800.0;
+	//DB_ANA_MULTI.MP_00_LT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_LT_02.AVH3:=4000.0;
+	
+	//DB_ANA_MULTI.MP_00_LT_03.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_LT_03.AH1:=1200.0;
+	//DB_ANA_MULTI.MP_00_LT_03.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_LT_03.AVH2:=1300.0;
+	//DB_ANA_MULTI.MP_00_LT_03.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_LT_03.AVH3:=1300.0;
+	
+	//DB_ANA_MULTI.MP_00_PT_09.AL1:=4.0;
+	//DB_ANA_MULTI.MP_00_PT_09.AH1:=16.0;
+	//DB_ANA_MULTI.MP_00_PT_09.AVL2:=2.0;
+	//DB_ANA_MULTI.MP_00_PT_09.AVH2:=16.0;
+	//DB_ANA_MULTI.MP_00_PT_09.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_09.AVH3:=16.0;
+	
+	//DB_ANA_MULTI.MP_00_PT_10.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_10.AH1:=16.0;
+	//DB_ANA_MULTI.MP_00_PT_10.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_10.AVH2:=16.0;
+	//DB_ANA_MULTI.MP_00_PT_10.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_10.AVH3:=16.0;
+	
+	//DB_ANA_MULTI.MP_00_TT_01.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_TT_01.AH1:=80.0;
+	//DB_ANA_MULTI.MP_00_TT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_TT_01.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_00_TT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_TT_01.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_00_PT_03.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_03.AH1:=80.0;
+	//DB_ANA_MULTI.MP_00_PT_03.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_03.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_00_PT_03.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_03.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_00_PT_04.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_04.AH1:=80.0;
+	//DB_ANA_MULTI.MP_00_PT_04.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_04.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_00_PT_04.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_04.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_00_PT_05.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_05.AH1:=80.0;
+	//DB_ANA_MULTI.MP_00_PT_05.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_05.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_00_PT_05.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_05.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_00_PT_06.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_06.AH1:=80.0;
+	//DB_ANA_MULTI.MP_00_PT_06.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_06.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_00_PT_06.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_06.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MP_00_PT_07.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_07.AH1:=10.0;
+	//DB_ANA_MULTI.MP_00_PT_07.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_07.AVH2:=10.0;
+	//DB_ANA_MULTI.MP_00_PT_07.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_07.AVH3:=10.0;
+	
+	//DB_ANA_MULTI.MP_00_PT_08.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_08.AH1:=10.0;
+	//DB_ANA_MULTI.MP_00_PT_08.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_08.AVH2:=10.0;
+	//DB_ANA_MULTI.MP_00_PT_08.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_PT_08.AVH3:=10.0;
+	
+	//DB_ANA_MULTI.VI_03_PT_01.AL1:=1.0;
+	//DB_ANA_MULTI.VI_03_PT_01.AH1:=20.0;
+	//DB_ANA_MULTI.VI_03_PT_01.AVL2:=1.0;
+	//DB_ANA_MULTI.VI_03_PT_01.AVH2:=20.0;
+	//DB_ANA_MULTI.VI_03_PT_01.AVL3:=1.0;
+	//DB_ANA_MULTI.VI_03_PT_01.AVH3:=20.0;
+	
+	//DB_ANA_MULTI.VI_03_PT_02.AL1:=1.0;
+	//DB_ANA_MULTI.VI_03_PT_02.AH1:=20.0;
+	//DB_ANA_MULTI.VI_03_PT_02.AVL2:=1.0;
+	//DB_ANA_MULTI.VI_03_PT_02.AVH2:=20.0;
+	//DB_ANA_MULTI.VI_03_PT_02.AVL3:=1.0;
+	//DB_ANA_MULTI.VI_03_PT_02.AVH3:=20.0;
+	
+	//DB_ANA_MULTI.VI_03_PT_03.AL1:=1.0;
+	//DB_ANA_MULTI.VI_03_PT_03.AH1:=20.0;
+	//DB_ANA_MULTI.VI_03_PT_03.AVL2:=1.0;
+	//DB_ANA_MULTI.VI_03_PT_03.AVH2:=20.0;
+	//DB_ANA_MULTI.VI_03_PT_03.AVL3:=1.0;
+	//DB_ANA_MULTI.VI_03_PT_03.AVH3:=20.0;
+	
+	//DB_ANA_MULTI.VI_03_TT_01.AL1:=0.0;
+	//DB_ANA_MULTI.VI_03_TT_01.AH1:=80.0;
+	//DB_ANA_MULTI.VI_03_TT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.VI_03_TT_01.AVH2:=90.0;
+	//DB_ANA_MULTI.VI_03_TT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.VI_03_TT_01.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.VI_03_TT_02.AL1:=0.0;
+	//DB_ANA_MULTI.VI_03_TT_02.AH1:=80.0;
+	//DB_ANA_MULTI.VI_03_TT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.VI_03_TT_02.AVH2:=90.0;
+	//DB_ANA_MULTI.VI_03_TT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.VI_03_TT_02.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.VO_03_PT_01.AL1:=2.5;
+	//DB_ANA_MULTI.VO_03_PT_01.AH1:=250.0;
+	//DB_ANA_MULTI.VO_03_PT_01.AVL2:=2.5;
+	//DB_ANA_MULTI.VO_03_PT_01.AVH2:=250.0;
+	//DB_ANA_MULTI.VO_03_PT_01.AVL3:=2.5;
+	//DB_ANA_MULTI.VO_03_PT_01.AVH3:=250.0;
+	
+	//DB_ANA_MULTI.VO_03_PT_02.AL1:=2.5;
+	//DB_ANA_MULTI.VO_03_PT_02.AH1:=250.0;
+	//DB_ANA_MULTI.VO_03_PT_02.AVL2:=2.5;
+	//DB_ANA_MULTI.VO_03_PT_02.AVH2:=250.0;
+	//DB_ANA_MULTI.VO_03_PT_02.AVL3:=2.5;
+	//DB_ANA_MULTI.VO_03_PT_02.AVH3:=250.0;
+	
+	//DB_ANA_MULTI.VI_04_PT_01.AL1:=1.0;
+	//DB_ANA_MULTI.VI_04_PT_01.AH1:=20.0;
+	//DB_ANA_MULTI.VI_04_PT_01.AVL2:=1.0;
+	//DB_ANA_MULTI.VI_04_PT_01.AVH2:=20.0;
+	//DB_ANA_MULTI.VI_04_PT_01.AVL3:=1.0;
+	//DB_ANA_MULTI.VI_04_PT_01.AVH3:=20.0;
+	
+	//DB_ANA_MULTI.VI_04_PT_02.AL1:=1.0;
+	//DB_ANA_MULTI.VI_04_PT_02.AH1:=20.0;
+	//DB_ANA_MULTI.VI_04_PT_02.AVL2:=1.0;
+	//DB_ANA_MULTI.VI_04_PT_02.AVH2:=20.0;
+	//DB_ANA_MULTI.VI_04_PT_02.AVL3:=1.0;
+	//DB_ANA_MULTI.VI_04_PT_02.AVH3:=20.0;
+	
+	//DB_ANA_MULTI.VI_04_PT_03.AL1:=1.0;
+	//DB_ANA_MULTI.VI_04_PT_03.AH1:=20.0;
+	//DB_ANA_MULTI.VI_04_PT_03.AVL2:=1.0;
+	//DB_ANA_MULTI.VI_04_PT_03.AVH2:=20.0;
+	//DB_ANA_MULTI.VI_04_PT_03.AVL3:=1.0;
+	//DB_ANA_MULTI.VI_04_PT_03.AVH3:=20.0;
+	
+	//DB_ANA_MULTI.VI_04_TT_01.AL1:=0.0;
+	//DB_ANA_MULTI.VI_04_TT_01.AH1:=80.0;
+	//DB_ANA_MULTI.VI_04_TT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.VI_04_TT_01.AVH2:=90.0;
+	//DB_ANA_MULTI.VI_04_TT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.VI_04_TT_01.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.VI_04_TT_02.AL1:=0.0;
+	//DB_ANA_MULTI.VI_04_TT_02.AH1:=80.0;
+	//DB_ANA_MULTI.VI_04_TT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.VI_04_TT_02.AVH2:=90.0;
+	//DB_ANA_MULTI.VI_04_TT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.VI_04_TT_02.AVH3:=100.0;
+	
+	"DB_ANA_MULTI".PL_01_LT_01.AL1:=300.0;
+	"DB_ANA_MULTI".PL_01_LT_01.AH1:=670.0;
+	"DB_ANA_MULTI".PL_01_LT_01.AVL2:=260.0;
+	"DB_ANA_MULTI".PL_01_LT_01.AVH2:=670.0;
+	"DB_ANA_MULTI".PL_01_LT_01.AVL3:=0.0;
+	"DB_ANA_MULTI".PL_01_LT_01.AVH3:=700.0;
+	
+	//DB_ANA_MULTI.PL_01_LT_02.AL1:=0.0;
+	//DB_ANA_MULTI.PL_01_LT_02.AH1:=1000.0;
+	//DB_ANA_MULTI.PL_01_LT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.PL_01_LT_02.AVH2:=1100.0;
+	//DB_ANA_MULTI.PL_01_LT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.PL_01_LT_02.AVH3:=1800.0;
+	
+	//DB_ANA_MULTI.PL_01_LT_03.AL1:=0.0;
+	//DB_ANA_MULTI.PL_01_LT_03.AH1:=1200.0;
+	//DB_ANA_MULTI.PL_01_LT_03.AVL2:=0.0;
+	//DB_ANA_MULTI.PL_01_LT_03.AVH2:=1300.0;
+	//DB_ANA_MULTI.PL_01_LT_03.AVL3:=0.0;
+	//DB_ANA_MULTI.PL_01_LT_03.AVH3:=1300.0;
+	
+	//DB_ANA_MULTI.PL_01_PT_01.AL1:=0.0;
+	//DB_ANA_MULTI.PL_01_PT_01.AH1:=4.0;
+	//DB_ANA_MULTI.PL_01_PT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.PL_01_PT_01.AVH2:=4.0;
+	//DB_ANA_MULTI.PL_01_PT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.PL_01_PT_01.AVH3:=4.0;
+	
+	//DB_ANA_MULTI.PL_01_PT_02.AL1:=0.0;
+	//DB_ANA_MULTI.PL_01_PT_02.AH1:=4.0;
+	//DB_ANA_MULTI.PL_01_PT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.PL_01_PT_02.AVH2:=4.0;
+	//DB_ANA_MULTI.PL_01_PT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.PL_01_PT_02.AVH3:=4.0;
+	
+	//DB_ANA_MULTI.PL_01_PT_03.AL1:=0.0;
+	//DB_ANA_MULTI.PL_01_PT_03.AH1:=4.0;
+	//DB_ANA_MULTI.PL_01_PT_03.AVL2:=0.0;
+	//DB_ANA_MULTI.PL_01_PT_03.AVH2:=4.0;
+	//DB_ANA_MULTI.PL_01_PT_03.AVL3:=0.0;
+	//DB_ANA_MULTI.PL_01_PT_03.AVH3:=4.0;
+	
+	//DB_ANA_MULTI.PL_01_TT_01.AL1:=0.0;
+	//DB_ANA_MULTI.PL_01_TT_01.AH1:=80.0;
+	//DB_ANA_MULTI.PL_01_TT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.PL_01_TT_01.AVH2:=90.0;
+	//DB_ANA_MULTI.PL_01_TT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.PL_01_TT_01.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.PL_01_TT_02.AL1:=0.0;
+	//DB_ANA_MULTI.PL_01_TT_02.AH1:=80.0;
+	//DB_ANA_MULTI.PL_01_TT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.PL_01_TT_02.AVH2:=90.0;
+	//DB_ANA_MULTI.PL_01_TT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.PL_01_TT_02.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.PL_01_TT_03.AL1:=0.0;
+	//DB_ANA_MULTI.PL_01_TT_03.AH1:=80.0;
+	//DB_ANA_MULTI.PL_01_TT_03.AVL2:=0.0;
+	//DB_ANA_MULTI.PL_01_TT_03.AVH2:=90.0;
+	//DB_ANA_MULTI.PL_01_TT_03.AVL3:=0.0;
+	//DB_ANA_MULTI.PL_01_TT_03.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS03_TT_01.AL1:=0.0;
+	//DB_ANA_MULTI.ADS03_TT_01.AH1:=80.0;
+	//DB_ANA_MULTI.ADS03_TT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS03_TT_01.AVH2:=90.0;
+	//DB_ANA_MULTI.ADS03_TT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS03_TT_01.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_ET_01.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_01.AH1:=80.0;
+	//DB_ANA_MULTI.ADS01_ET_01.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_01.AVH2:=90.0;
+	//DB_ANA_MULTI.ADS01_ET_01.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_01.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_ET_02.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_02.AH1:=80.0;
+	//DB_ANA_MULTI.ADS01_ET_02.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_02.AVH2:=90.0;
+	//DB_ANA_MULTI.ADS01_ET_02.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_02.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_ET_03.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_03.AH1:=80.0;
+	//DB_ANA_MULTI.ADS01_ET_03.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_03.AVH2:=90.0;
+	//DB_ANA_MULTI.ADS01_ET_03.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_03.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_ET_04.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_04.AH1:=80.0;
+	//DB_ANA_MULTI.ADS01_ET_04.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_04.AVH2:=90.0;
+	//DB_ANA_MULTI.ADS01_ET_04.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_04.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_ET_05.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_05.AH1:=80.0;
+	//DB_ANA_MULTI.ADS01_ET_05.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_05.AVH2:=90.0;
+	//DB_ANA_MULTI.ADS01_ET_05.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_05.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_ET_06.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_06.AH1:=80.0;
+	//DB_ANA_MULTI.ADS01_ET_06.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_06.AVH2:=90.0;
+	//DB_ANA_MULTI.ADS01_ET_06.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_ET_06.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_01.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_01.AH1:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_01.AVH2:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_01.AVH3:=800.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_02.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_02.AH1:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_02.AVH2:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_02.AVH3:=800.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_03.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_03.AH1:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_03.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_03.AVH2:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_03.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_03.AVH3:=800.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_04.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_04.AH1:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_04.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_04.AVH2:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_04.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_04.AVH3:=800.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_05.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_05.AH1:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_05.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_05.AVH2:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_05.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_05.AVH3:=800.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_06.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_06.AH1:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_06.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_06.AVH2:=800.0;
+	//DB_ANA_MULTI.ADS01_IT_06.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_06.AVH3:=800.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_07.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_07.AH1:=400.0;
+	//DB_ANA_MULTI.ADS01_IT_07.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_07.AVH2:=400.0;
+	//DB_ANA_MULTI.ADS01_IT_07.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_07.AVH3:=400.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_08.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_08.AH1:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_08.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_08.AVH2:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_08.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_08.AVH3:=200.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_09.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_09.AH1:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_09.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_09.AVH2:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_09.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_09.AVH3:=200.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_10.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_10.AH1:=600.0;
+	//DB_ANA_MULTI.ADS01_IT_10.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_10.AVH2:=600.0;
+	//DB_ANA_MULTI.ADS01_IT_10.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_10.AVH3:=600.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_11.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_11.AH1:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_11.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_11.AVH2:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_11.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_11.AVH3:=200.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_12.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_12.AH1:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_12.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_12.AVH2:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_12.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_12.AVH3:=200.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_13.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_13.AH1:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_13.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_13.AVH2:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_13.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_13.AVH3:=200.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_14.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_14.AH1:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_14.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_14.AVH2:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_14.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_14.AVH3:=200.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_15.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_15.AH1:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_15.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_15.AVH2:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_15.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_15.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_16.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_16.AH1:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_16.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_16.AVH2:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_16.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_16.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_17.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_17.AH1:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_17.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_17.AVH2:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_17.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_17.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_18.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_18.AH1:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_18.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_18.AVH2:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_18.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_18.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_19.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_19.AH1:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_19.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_19.AVH2:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_19.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_19.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_20.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_20.AH1:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_20.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_20.AVH2:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_20.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_20.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_21.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_21.AH1:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_21.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_21.AVH2:=100.0;
+	//DB_ANA_MULTI.ADS01_IT_21.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_21.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_22.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_22.AH1:=300.0;
+	//DB_ANA_MULTI.ADS01_IT_22.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_22.AVH2:=300.0;
+	//DB_ANA_MULTI.ADS01_IT_22.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_22.AVH3:=300.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_23.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_23.AH1:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_23.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_23.AVH2:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_23.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_23.AVH3:=200.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_24.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_24.AH1:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_24.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_24.AVH2:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_24.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_24.AVH3:=200.0;
+	
+	//DB_ANA_MULTI.ADS01_IT_25.AL1:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_25.AH1:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_25.AVL2:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_25.AVH2:=200.0;
+	//DB_ANA_MULTI.ADS01_IT_25.AVL3:=0.0;
+	//DB_ANA_MULTI.ADS01_IT_25.AVH3:=200.0;
+	
+	//DB_ANA_MULTI.TC_00_LT_01.AL1:=400.0;
+	//DB_ANA_MULTI.TC_00_LT_01.AH1:=4600.0;
+	//DB_ANA_MULTI.TC_00_LT_01.AVL2:=300.0;
+	//DB_ANA_MULTI.TC_00_LT_01.AVH2:=4700.0;
+	//DB_ANA_MULTI.TC_00_LT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.TC_00_LT_01.AVH3:=4800.0;
+	
+	//DB_ANA_MULTI.TC_00_PT_01.AL1:=0.0;
+	//DB_ANA_MULTI.TC_00_PT_01.AH1:=16.0;
+	//DB_ANA_MULTI.TC_00_PT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.TC_00_PT_01.AVH2:=16.0;
+	//DB_ANA_MULTI.TC_00_PT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.TC_00_PT_01.AVH3:=16.0;
+	
+	//DB_ANA_MULTI.TC_00_PT_02.AL1:=0.0;
+	//DB_ANA_MULTI.TC_00_PT_02.AH1:=16.0;
+	//DB_ANA_MULTI.TC_00_PT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.TC_00_PT_02.AVH2:=16.0;
+	//DB_ANA_MULTI.TC_00_PT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.TC_00_PT_02.AVH3:=16.0;
+	
+	//DB_ANA_MULTI.BH_00_PT_04.AL1:=2.8;
+	//DB_ANA_MULTI.BH_00_PT_04.AH1:=4.5;
+	//DB_ANA_MULTI.BH_00_PT_04.AVL2:=0.0;
+	//DB_ANA_MULTI.BH_00_PT_04.AVH2:=16.0;
+	//DB_ANA_MULTI.BH_00_PT_04.AVL3:=0.0;
+	//DB_ANA_MULTI.BH_00_PT_04.AVH3:=16.0;
+	
+	//DB_ANA_MULTI.BH_00_PT_05.AL1:=1.7;
+	//DB_ANA_MULTI.BH_00_PT_05.AH1:=3.5;
+	//DB_ANA_MULTI.BH_00_PT_05.AVL2:=0.0;
+	//DB_ANA_MULTI.BH_00_PT_05.AVH2:=16.0;
+	//DB_ANA_MULTI.BH_00_PT_05.AVL3:=0.0;
+	//DB_ANA_MULTI.BH_00_PT_05.AVH3:=16.0;
+	
+	//DB_ANA_MULTI.BH_00_PT_03.AL1:=0.0;
+	//DB_ANA_MULTI.BH_00_PT_03.AH1:=4.0;
+	//DB_ANA_MULTI.BH_00_PT_03.AVL2:=0.0;
+	//DB_ANA_MULTI.BH_00_PT_03.AVH2:=4.0;
+	//DB_ANA_MULTI.BH_00_PT_03.AVL3:=0.0;
+	//DB_ANA_MULTI.BH_00_PT_03.AVH3:=4.0;
+	
+	//DB_ANA_MULTI.BH_00_LT_01.AL1:=300.0;
+	//DB_ANA_MULTI.BH_00_LT_01.AH1:=1800.0;
+	//DB_ANA_MULTI.BH_00_LT_01.AVL2:=200.0;
+	//DB_ANA_MULTI.BH_00_LT_01.AVH2:=1900.0;
+	//DB_ANA_MULTI.BH_00_LT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.BH_00_LT_01.AVH3:=2000.0;
+	
+	//DB_ANA_MULTI.BH_00_LT_02.AL1:=300.0;
+	//DB_ANA_MULTI.BH_00_LT_02.AH1:=1800.0;
+	//DB_ANA_MULTI.BH_00_LT_02.AVL2:=200.0;
+	//DB_ANA_MULTI.BH_00_LT_02.AVH2:=1900.0;
+	//DB_ANA_MULTI.BH_00_LT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.BH_00_LT_02.AVH3:=2000.0;
+	
+	//DB_ANA_MULTI.GRP_01_TT_01.AL1:=0.0;
+	//DB_ANA_MULTI.GRP_01_TT_01.AH1:=80.0;
+	//DB_ANA_MULTI.GRP_01_TT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.GRP_01_TT_01.AVH2:=90.0;
+	//DB_ANA_MULTI.GRP_01_TT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.GRP_01_TT_01.AVH3:=100.0;
+	
+	//DB_ANA_MULTI.MF_01_PT_01.AL1:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_01.AH1:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_01.AVL2:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_01.AVH2:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_01.AVL3:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_01.AVH3:=10.0;
+	
+	//DB_ANA_MULTI.MF_01_PT_02.AL1:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_02.AH1:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_02.AVH2:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_02.AVH3:=10.0;
+	
+	//DB_ANA_MULTI.MF_01_PT_03.AL1:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_03.AH1:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_03.AVL2:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_03.AVH2:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_03.AVL3:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_03.AVH3:=10.0;
+	
+	//DB_ANA_MULTI.MF_01_PT_04.AL1:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_04.AH1:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_04.AVL2:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_04.AVH2:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_04.AVL3:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_04.AVH3:=10.0;
+	
+	//DB_ANA_MULTI.MF_01_PT_05.AL1:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_05.AH1:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_05.AVL2:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_05.AVH2:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_05.AVL3:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_05.AVH3:=10.0;
+	
+	//DB_ANA_MULTI.MF_01_PT_06.AL1:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_06.AH1:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_06.AVL2:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_06.AVH2:=10.0;
+	//DB_ANA_MULTI.MF_01_PT_06.AVL3:=0.0;
+	//DB_ANA_MULTI.MF_01_PT_06.AVH3:=10.0;
+	
+	//DB_ANA_MULTI.MP_00_TT_02.AL1:=0.0;
+	//DB_ANA_MULTI.MP_00_TT_02.AH1:=80.0;
+	//DB_ANA_MULTI.MP_00_TT_02.AVL2:=0.0;
+	//DB_ANA_MULTI.MP_00_TT_02.AVH2:=90.0;
+	//DB_ANA_MULTI.MP_00_TT_02.AVL3:=0.0;
+	//DB_ANA_MULTI.MP_00_TT_02.AVH3:=100.0;
+	
+	*)
+	
+END_FUNCTION
+
+FUNCTION "FC_ANA_MULTI" : Void
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+
+BEGIN
+	
+	"DB_FL_01_LS_450"(
+	                  XQ11:="FL_01_LT_450_XQ11" 
+	                  //XG24:=false,
+	                  //SFLT:=false,
+	                  //QV=>_real_out_,
+	                  //GL2=>_bool_out_,
+	                  //GL1=>_bool_out_,
+	                  //GL0=>_bool_out_,
+	                  //GH0=>_bool_out_,
+	                  //GH1=>_bool_out_,
+	                  //GH2=>_bool_out_,
+	                  //GVI=>_bool_out_,
+	                  //GVX=>_bool_out_*)
+	);
+	
+	
+	
+	
+	
+	
+	
+	
+	(*//Давление в напорном трубопроводе №1 12% раствора коагулянта P301
+	"DB_PT_P301"(XQ11:="PT_P301_XQ11",      // Данные с поля
+	             //XG24:=false,
+	             //SFLT:=false,
+	             //QV=>_real_out_,
+	             //GL2=>_bool_out_,
+	             //GL1=>_bool_out_,
+	             //GL0=>_bool_out_,
+	             //GH0=>_bool_out_,
+	             //GH1=>_bool_out_,
+	             //GH2=>_bool_out_,
+	             //GVI=>_bool_out_,
+	             //GVX=>_bool_out_
+	             );
+	
+	
+	
+	
+	
+	(*
+	      "FC_ANA01"(XQ11:= "MP_01_PIT01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_PIT01);  //Давление масла к МНА1 (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_PIT02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_PIT02);  //Давление на входе МНА1 (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_PIT03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_PIT03);  //Давление на выходе МНА1 (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_VT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_VT_01);  //Вибрация подшипника 1 насоса (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_VT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_VT_02);  //Вибрация подшипника 2 насоса (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_VT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_VT_03);  //Вибрация подшипника 1 двигателя (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_VT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_VT_04);  //Вибрация подшипника 2 двигателя (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_02_PIT01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_PIT01);  //Давление масла к МНА2 (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_PIT02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_PIT02);  //Давление на входе МНА2 (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_PIT03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_PIT03);  //Давление на выходе МНА2 (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_VT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_VT_01);  //Вибрация подшипника 1 насоса (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_VT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_VT_02);  //Вибрация подшипника 2 насоса (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_VT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_VT_03);  //Вибрация подшипника 1 двигателя (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_VT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_VT_04);  //Вибрация подшипника 2 двигателя (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_00_LT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_LT_01);  //Уровень в емкости (Емкость сбора утечек 1)
+	      "FC_ANA01"(XQ11:= "MP_00_LT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_LT_02);  //Уровень в емкости (Емкость сбора утечек 2)
+	      "FC_ANA01"(XQ11:= "MP_00_LT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_LT_03);  //Уровень в емкости (Емкость сбора утечек 3)
+	      "MP_00_PT_09"(XQ11:= "MP_00_PT_09_XQ11", XG24:= FALSE, SFLT:= FALSE);  //Давление нефти на входе МНС т1 (Общее для МНС)
+	      "MP_00_PT_10"(XQ11:= "MP_00_PT_10_XQ11", XG24:= FALSE, SFLT:= FALSE);  //Давление нефти на входе МНС т2 (Общее для МНС)
+	      "MP_00_PT_05"(XQ11:= "MP_00_PT_05_XQ11", XG24:= FALSE, SFLT:= FALSE);  //Давление в коллекторе после РД т1 (Общее для МНС)
+	      "MP_00_PT_06"(XQ11:= "MP_00_PT_06_XQ11", XG24:= FALSE, SFLT:= FALSE);  //Давление в коллекторе после РД т2 (Общее для МНС)
+	      
+	      
+	      "DB_ANA_MULTI"."MP_00_PT_09".QV :="MP_00_PT_09".QV ;
+	 "DB_ANA_MULTI"."MP_00_PT_10".QV :="MP_00_PT_10".QV ;
+	  "DB_ANA_MULTI"."MP_00_PT_06".QV :="MP_00_PT_06".QV ;
+	   "DB_ANA_MULTI"."MP_00_PT_05".QV :="MP_00_PT_05".QV ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GL2 :="MP_00_PT_09".GL2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GL1 :="MP_00_PT_09".GL1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GH1 :="MP_00_PT_09".GH1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GH2 :="MP_00_PT_09".GH2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GVX :="MP_00_PT_09".GVX ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GVI :="MP_00_PT_09".GVI ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GVX2 :="MP_00_PT_09".GVX2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GVX3 :="MP_00_PT_09".GVX3 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GVHL :="MP_00_PT_09".GVHL ;
+	        
+	               "DB_ANA_MULTI"."MP_00_PT_10".GL2 :="MP_00_PT_10".GL2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GL1 :="MP_00_PT_10".GL1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GH1 :="MP_00_PT_10".GH1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GH2 :="MP_00_PT_10".GH2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GVX :="MP_00_PT_10".GVX ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GVI :="MP_00_PT_10".GVI ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GVX2 :="MP_00_PT_10".GVX2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GVX3 :="MP_00_PT_10".GVX3 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GVHL :="MP_00_PT_10".GVHL ;
+	        
+	               "DB_ANA_MULTI"."MP_00_PT_05".GL2 :="MP_00_PT_05".GL2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GL1 :="MP_00_PT_05".GL1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GH1 :="MP_00_PT_05".GH1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GH2 :="MP_00_PT_05".GH2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GVX :="MP_00_PT_05".GVX ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GVI :="MP_00_PT_05".GVI ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GVX2 :="MP_00_PT_05".GVX2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GVX3 :="MP_00_PT_05".GVX3 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GVHL :="MP_00_PT_05".GVHL ;
+	        
+	               "DB_ANA_MULTI"."MP_00_PT_06".GL2 :="MP_00_PT_06".GL2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GL1 :="MP_00_PT_06".GL1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GH1 :="MP_00_PT_06".GH1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GH2 :="MP_00_PT_06".GH2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GVX :="MP_00_PT_06".GVX ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GVI :="MP_00_PT_06".GVI ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GVX2 :="MP_00_PT_06".GVX2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GVX3 :="MP_00_PT_06".GVX3 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GVHL :="MP_00_PT_06".GVHL ;
+	
+	      
+	      
+	   
+	      "FC_ANA01"(XQ11:= "MP_00_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_PT_03);  //Давление в коллекторе до РД т1 (Общее для МНС)
+	      "FC_ANA01"(XQ11:= "MP_00_PT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_PT_04);  //Давление в коллекторе до РД т2 (Общее для МНС)
+	      "FC_ANA01"(XQ11:= "MP_00_PT_07_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_PT_07);  //Давление на выходе (Насос 1)
+	      "FC_ANA01"(XQ11:= "MP_00_PT_08_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_PT_08);  //Давление на выходе (Насос 2)
+	      "FC_ANA01"(XQ11:= "VI_03_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_03_PT_01);  //Давление приточного вентилятора 1 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VI_03_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_03_PT_02);  //Давление приточного вентилятора 2 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VI_03_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_03_PT_03);  //Давление приточных вентиляторов 1, 2 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VO_03_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VO_03_PT_01);  //Разряжение вытяжного вентилятора 1 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VO_03_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VO_03_PT_02);  //Разряжение вытяжного вентилятора 2 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VI_04_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_04_PT_01);  //Давление приточного вентилятора 1 (Электрозал)
+	      "FC_ANA01"(XQ11:= "VI_04_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_04_PT_02);  //Давление приточного вентилятора 2 (Электрозал)
+	      "FC_ANA01"(XQ11:= "VI_04_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_04_PT_03);  //Давление приточных вентиляторов 1, 2 (Электрозал)
+	      "FC_ANA01"(XQ11:= "PL_01_LT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_LT_01);  //Уровень в маслобаке 9 (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_LT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_LT_02);  //Уровень в маслобаке 10 (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_LT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_LT_03);  //Уровень масла в аккумулирующем баке (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_PT_01);  //Давление на выходе маслонасоса 9 (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_PT_02);  //Давление на выходе маслонасоса 10 (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_PT_03);  //Давление масла после фильтров (Маслосистема)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_01);  //Контроль напряжения Ввода от ВНС-8 Секция 1 Фаза А (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_02);  //Контроль напряжения Ввода от ВНС-8 Секция 1 Фаза В (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_03);  //Контроль напряжения Ввода от ВНС-8 Секция 1 Фаза С (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_04);  //Контроль напряжения Ввода от ВНС-8 Секция 2 Фаза А (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_05_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_05);  //Контроль напряжения Ввода от ВНС-8 Секция 2 Фаза В (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_06_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_06);  //Контроль напряжения Ввода от ВНС-8 Секция 2 Фаза С (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_01);  //Контроль тока Ввода от ВНС-8 Секция 1 Фаза А (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_02);  //Контроль тока Ввода от ВНС-8 Секция 1 Фаза B (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_03);  //Контроль тока Ввода от ВНС-8 Секция 1 Фаза С (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_04);  //Контроль тока Ввода от ВНС-8 Секция 2 Фаза А (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_05_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_05);  //Контроль тока Ввода от ВНС-8 Секция 2 Фаза B (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_06_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_06);  //Контроль тока Ввода от ВНС-8 Секция 2 Фаза С (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_07_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_07);  //Ток фидера Линия к КУ1 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_08_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_08);  //Ток фидера Эл. двигатель 2 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_09_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_09);  //Ток фидера 3 Резерв (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_10_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_10);  //Ток фидера СВ (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_11_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_11);  //Ток фидера Линия к КУ2 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_12_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_12);  //Ток фидера Эл. двигатель 1 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_13_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_13);  //Ток фидера 7 Резерв (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_14_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_14);  //Ток фидера Кульсары ВОС (ввод 1) (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_15_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_15);  //Ток фидера КТП МН Т-1 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_16_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_16);  //Ток фидера КТП ПП Т-1 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_17_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_17);  //Ток фидера НПС-3 ЭХЗ Кульсары (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_18_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_18);  //Ток фидера КТП10/0,4кВ (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_19_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_19);  //Ток фидера Опорная ЭХЗ Кульсары (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_20_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_20);  //Ток фидера КТП ПП Т-2 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_21_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_21);  //Ток фидера КТП МН Т-2 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_22_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_22);  //Ток фидера Кульсары ВОС (ввод 2) (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_23_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_23);  //Ток фидера 17 Резерв (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_24_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_24);  //Ток электродвигателя 1 РД (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_25_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_25);  //Ток электродвигателя 2 РД (КРУ)
+	      "FC_ANA01"(XQ11:= "TC_00_LT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".TC_00_LT_01);  //Уровень в резервуаре КНС (КНС)
+	      "FC_ANA01"(XQ11:= "TC_00_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".TC_00_PT_01);  //Давление на выходе насоса 1 КНС (КНС)
+	      "FC_ANA01"(XQ11:= "TC_00_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".TC_00_PT_02);  //Давление на выходе насоса 2 КНС (КНС)
+	      "FC_ANA01"(XQ11:= "BH_00_PT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".BH_00_PT_04);  //Давление в прямом трубопроводе сети (Котельная)
+	      "FC_ANA01"(XQ11:= "BH_00_PT_05_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".BH_00_PT_05);  //Давление в обратном трубопроводе сети (Котельная)
+	      "FC_ANA01"(XQ11:= "BH_00_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".BH_00_PT_03);  //Давление подпиточной воды (Котельная)
+	      "FC_ANA01"(XQ11:= "BH_00_LT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".BH_00_LT_01);  //Уровень подпиточной воды (Котельная)
+	      "FC_ANA01"(XQ11:= "BH_00_LT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".BH_00_LT_02);  //Уровень в топливной емкости (Котельная)
+	      "FC_ANA01"(XQ11:= "MF_01_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_01);  //Давление на входе фильтра №1
+	      "FC_ANA01"(XQ11:= "MF_01_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_02);  //Давление на выходе фильтра №1
+	      "FC_ANA01"(XQ11:= "MF_01_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_03);  //Давление на входе фильтра №2
+	      "FC_ANA01"(XQ11:= "MF_01_PT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_04);  //Давление на выходе фильтра №2
+	      "FC_ANA01"(XQ11:= "MF_01_PT_05_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_05);  //Давление на входе фильтра №3
+	      "FC_ANA01"(XQ11:= "MF_01_PT_06_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_06);  //Давление на выходе фильтра №3
+	      
+	      "FC_ANA01"(XQ11:= "MP_01_TT_09_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_TT_09);  //Температура подшипника 1 насоса (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_TT_10_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_TT_10);  //Температура подшипника 2 насоса (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_TT_13_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_TT_13);  //Температура корпуса насоса (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_TT_11_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_TT_11);  //Температура подшипника 1 двигателя (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_TT_12_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_TT_12);  //Температура подшипника 2 двигателя (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_02_TT_09_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_TT_09);  //Температура подшипника 1 насоса (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_TT_10_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_TT_10);  //Температура подшипника 2 насоса (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_TT_13_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_TT_13);  //Температура корпуса насоса (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_TT_11_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_TT_11);  //Температура подшипника 1 двигателя (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_TT_12_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_TT_12);  //Температура подшипника 2 двигателя (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_00_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_TT_01);  //Температура нефти (Общее для МНС)
+	      "FC_ANA01"(XQ11:= "VI_03_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_03_TT_01);  //Температура помещения т1 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VI_03_TT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_03_TT_02);  //Температура помещения т2 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VI_04_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_04_TT_01);  //Температура помещения т1 (Электрозал)
+	      "FC_ANA01"(XQ11:= "VI_04_TT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_04_TT_02);  //Температура помещения т2 (Электрозал)
+	      "FC_ANA01"(XQ11:= "PL_01_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_TT_01);  //Температура масла до охладителей (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_TT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_TT_02);  //Температура масла после охладителей (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_TT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_TT_03);  //Температура масла в аккумулирующем баке (Маслосистема)
+	      "FC_ANA01"(XQ11:= "ADS03_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS03_TT_01);  //Температура помещения (КТП)
+	      "FC_ANA01"(XQ11:= "GRP_01_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".GRP_01_TT_01);  //Температура газа в ГРПШ (Котельная)
+	      "FC_ANA01"(XQ11:= "MP_00_TT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_TT_02);  //Температура емкости утечек МНС
+	
+	      "FC_ANA01"(XQ11:= "MC_01_MCV01_XL11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MC_01_MCV01);  //Температура газа в ГРПШ (Котельная)
+	      "FC_ANA01"(XQ11:= "MC_01_MCV02_XL11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MC_01_MCV02);  //Температура емкости утечек МНС      
+	      
+	       "DB_S7ConANA".MP_00_PT_09:="DB_ANA_MULTI".MP_00_PT_09; //Давление нефти на входе МНС т1 (Общее для МНС)
+	       "DB_S7ConANA".MP_00_PT_10:="DB_ANA_MULTI".MP_00_PT_10; //Давление нефти на входе МНС т2 (Общее для МНС)
+	       "DB_S7ConANA".MP_00_TT_01:="DB_ANA_MULTI".MP_00_TT_01; //Температура нефти (Общее для МНС)
+	       "DB_S7ConANA".MP_00_PT_03:="DB_ANA_MULTI".MP_00_PT_03; //Давление в коллекторе до РД т1 (Общее для МНС)
+	       "DB_S7ConANA".MP_00_PT_04:="DB_ANA_MULTI".MP_00_PT_04; //Давление в коллекторе до РД т2 (Общее для МНС)
+	       "DB_S7ConANA".MP_00_PT_05:="DB_ANA_MULTI".MP_00_PT_05; //Давление в коллекторе после РД т1 (Общее для МНС)
+	       "DB_S7ConANA".MP_00_PT_06:="DB_ANA_MULTI".MP_00_PT_06; //Давление в коллекторе после РД т2 (Общее для МНС)
+	       "DB_S7ConANA".MC_01_MCV01:="DB_ANA_MULTI".MC_01_MCV01; //Положение заслонки №1
+	       "DB_S7ConANA".MC_01_MCV02:="DB_ANA_MULTI".MC_01_MCV02; //Положение заслонки №2      
+	*)
+ automatically inserted *)
+END_FUNCTION
+
+FUNCTION "FC_MOV_MULTI" : Void
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+
+BEGIN
+	(*"DB_"(X21:="MP_00_MOV01_XG21",
+	              X22:="MP_00_MOV01_XG22",
+	              X43:="MP_00_MOV01_XG43",
+	              X23:="MP_00_MOV01_XG23",
+	              X15:="MP_00_MOV01_XG24",
+	              EAO:=0,
+	              EAC:="MP_00".GE16,      //Аварийное закрытие
+	              EWO:=0,
+	              EWC:=0,
+	              SFLT:=0,
+	              PAZ :=0);  //MP_00_MOV01  ЭПЗ 5 
+	"MP_00_MOV01_YG31" := "MP_00_MOV01".Y31;
+	"MP_00_MOV01_YG32" := "MP_00_MOV01".Y32;
+	"MP_00_MOV01_YG33" := "MP_00_MOV01".Y33; //MP_00_MOV01  ЭПЗ 5   *)
+	
+	//ЭПЗ-37
+	"DB_MOV_37"(X21 := "MOV_37_X21",
+	            X22 := "MOV_37_X22",
+	            X43 := FALSE,
+	            X23 := "MOV_37_X23",
+	            X15 := false,
+	            EAO := false,
+	            EAC := false,
+	            EWO := false,
+	            EWC := false,
+	            SFLT := false,
+	            PAZ := false,
+	            Y31 => "MOV_37_Y31",
+	            Y32 => "MOV_37_Y32");
+	
+	
+	
+	
+	
+END_FUNCTION
+
+ORGANIZATION_BLOCK "CYC_INT5"
+TITLE = "Cyclic Interrupt"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+   VAR_TEMP 
+      OB35_EV_CLASS : Byte;   // Bits 0-3 = 1 (Coming event), Bits 4-7 = 1 (Event class 1)
+      OB35_STRT_INF : Byte;   // 16#36 (OB 35 has started)
+      OB35_PRIORITY : Byte;   // Priority of OB Execution
+      OB35_OB_NUMBR : Byte;   // 35 (Organization block 35, OB35)
+      OB35_RESERVED_1 : Byte;   // Reserved for system
+      OB35_RESERVED_2 : Byte;   // Reserved for system
+      OB35_PHASE_OFFSET : Word;   // Phase offset (msec)
+      OB35_RESERVED_3 : Int;   // Reserved for system
+      OB35_EXC_FREQ : Int;   // Frequency of execution (msec)
+      OB35_DATE_TIME : Date_And_Time;   // Date and time OB35 started
+   END_VAR
+
+
+BEGIN
+	"FC_ANA_Ust"();
+	"FC_ANA_MULTI"();
+	"FC_MOV_MULTI"();
+	
+END_ORGANIZATION_BLOCK
+

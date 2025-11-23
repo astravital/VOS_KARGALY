@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Stations>
+  <Station Name="S7-300/ET200M station_2">
+    <Rack Name="Rail_0">
+      <Module Name="DI 32x24VDC_1">
+        <IOChannel Number="0">
+          <Address>%I0.0</Address>
+          <Tag>DI_1_01</Tag>
+        </IOChannel>
+        <IOChannel Number="1">
+          <Address>%I0.1</Address>
+          <Tag>DI_1_02</Tag>
+        </IOChannel>
+        <IOChannel Number="2">
+          <Address>%I0.2</Address>
+          <Tag>DI_1_03</Tag>
+        </IOChannel>
+        <IOChannel Number="3">
+          <Address>%I0.3</Address>
+          <Tag>DI_1_04</Tag>
+        </IOChannel>
+        <IOChannel Number="4">
+          <Address>%I0.4</Address>
+          <Tag>DI_1_05</Tag>
+        </IOChannel>
+        <IOChannel Number="5">
+          <Address>%I0.5</Address>
+          <Tag>DI_1_06</Tag>
+        </IOChannel>
+        <IOChannel Number="6">
+          <Address>%I0.6</Address>
+          <Tag>DI_1_07</Tag>
+        </IOChannel>
+        <IOChannel Number="7">
+          <Address>%I0.7</Address>
+          <Tag>DI_1_08</Tag>
+        </IOChannel>
+        <IOChannel Number="8">
+          <Address>%I1.0</Address>
+          <Tag>DI_1_09</Tag>
+        </IOChannel>
+        <IOChannel Number="9">
+          <Address>%I1.1</Address>
+          <Tag>DI_1_10</Tag>
+        </IOChannel>
+        <IOChannel Number="10">
+          <Address>%I1.2</Address>
+          <Tag>DI_1_11</Tag>
+        </IOChannel>
+        <IOChannel Number="11">
+          <Address>%I1.3</Address>
+          <Tag>DI_1_12</Tag>
+        </IOChannel>
+        <IOChannel Number="12">
+          <Address>%I1.4</Address>
+          <Tag>DI_1_13</Tag>
+        </IOChannel>
+        <IOChannel Number="13">
+          <Address>%I1.5</Address>
+          <Tag>DI_1_14</Tag>
+        </IOChannel>
+        <IOChannel Number="14">
+          <Address>%I1.6</Address>
+          <Tag>DI_1_15</Tag>
+        </IOChannel>
+        <IOChannel Number="15">
+          <Address>%I1.7</Address>
+          <Tag>DI_1_16</Tag>
+        </IOChannel>
+        <IOChannel Number="16">
+          <Address>%I2.0</Address>
+          <Tag>DI_1_17</Tag>
+        </IOChannel>
+        <IOChannel Number="17">
+          <Address>%I2.1</Address>
+          <Tag>DI_1_18</Tag>
+        </IOChannel>
+        <IOChannel Number="18">
+          <Address>%I2.2</Address>
+          <Tag>DI_1_19</Tag>
+        </IOChannel>
+        <IOChannel Number="19">
+          <Address>%I2.3</Address>
+          <Tag>DI_1_20</Tag>
+        </IOChannel>
+        <IOChannel Number="20">
+          <Address>%I2.4</Address>
+          <Tag>DI_1_01(20)</Tag>
+        </IOChannel>
+        <IOChannel Number="21">
+          <Address>%I2.5</Address>
+          <Tag>DI_1_01(21)</Tag>
+        </IOChannel>
+        <IOChannel Number="22">
+          <Address>%I2.6</Address>
+          <Tag>DI_1_01(22)</Tag>
+        </IOChannel>
+        <IOChannel Number="23">
+          <Address>%I2.7</Address>
+          <Tag>DI_1_01(23)</Tag>
+        </IOChannel>
+        <IOChannel Number="24">
+          <Address>%I3.0</Address>
+          <Tag>DI_1_01(24)</Tag>
+        </IOChannel>
+        <IOChannel Number="25">
+          <Address>%I3.1</Address>
+          <Tag>DI_1_01(25)</Tag>
+        </IOChannel>
+        <IOChannel Number="26">
+          <Address>%I3.2</Address>
+          <Tag>DI_1_01(26)</Tag>
+        </IOChannel>
+        <IOChannel Number="27">
+          <Address>%I3.3</Address>
+          <Tag>DI_1_01(27)</Tag>
+        </IOChannel>
+        <IOChannel Number="28">
+          <Address>%I3.4</Address>
+          <Tag>DI_1_01(28)</Tag>
+        </IOChannel>
+        <IOChannel Number="29">
+          <Address>%I3.5</Address>
+          <Tag>DI_1_01(29)</Tag>
+        </IOChannel>
+        <IOChannel Number="30">
+          <Address>%I3.6</Address>
+          <Tag>DI_1_01(30)</Tag>
+        </IOChannel>
+        <IOChannel Number="31">
+          <Address>%I3.7</Address>
+          <Tag>DI_1_01(31)</Tag>
+        </IOChannel>
+      </Module>
+      <Module Name="DI 32x24VDC_2">
+        <IOChannel Number="0">
+          <Address>%I4.0</Address>
+          <Tag>DI_2_(1)</Tag>
+        </IOChannel>
+        <IOChannel Number="1">
+          <Address>%I4.1</Address>
+          <Tag>DI_2_(2)</Tag>
+        </IOChannel>
+        <IOChannel Number="2">
+          <Address>%I4.2</Address>
+          <Tag>DI_2_(3)</Tag>
+        </IOChannel>
+        <IOChannel Number="3">
+          <Address>%I4.3</Address>
+          <Tag>DI_2_(4)</Tag>
+        </IOChannel>
+        <IOChannel Number="4">
+          <Address>%I4.4</Address>
+          <Tag>DI_2_(5)</Tag>
+        </IOChannel>
+        <IOChannel Number="5">
+          <Address>%I4.5</Address>
+          <Tag>DI_2_(6)</Tag>
+        </IOChannel>
+        <IOChannel Number="6">
+          <Address>%I4.6</Address>
+          <Tag>DI_2_(7)</Tag>
+        </IOChannel>
+        <IOChannel Number="7">
+          <Address>%I4.7</Address>
+          <Tag>DI_2_(8)</Tag>
+        </IOChannel>
+        <IOChannel Number="8">
+          <Address>%I5.0</Address>
+          <Tag>DI_2_(9)</Tag>
+        </IOChannel>
+        <IOChannel Number="9">
+          <Address>%I5.1</Address>
+          <Tag>DI_2_(10)</Tag>
+        </IOChannel>
+        <IOChannel Number="10">
+          <Address>%I5.2</Address>
+          <Tag>DI_2_(11)</Tag>
+        </IOChannel>
+        <IOChannel Number="11">
+          <Address>%I5.3</Address>
+          <Tag>DI_2_(12)</Tag>
+        </IOChannel>
+        <IOChannel Number="12">
+          <Address>%I5.4</Address>
+          <Tag>DI_2_(13)</Tag>
+        </IOChannel>
+        <IOChannel Number="13">
+          <Address>%I5.5</Address>
+          <Tag>DI_2_(14)</Tag>
+        </IOChannel>
+        <IOChannel Number="14">
+          <Address>%I5.6</Address>
+          <Tag>DI_2_(15)</Tag>
+        </IOChannel>
+        <IOChannel Number="15">
+          <Address>%I5.7</Address>
+          <Tag>DI_2_(16)</Tag>
+        </IOChannel>
+        <IOChannel Number="16">
+          <Address>%I6.0</Address>
+          <Tag>DI_2_(17)</Tag>
+        </IOChannel>
+        <IOChannel Number="17">
+          <Address>%I6.1</Address>
+          <Tag>DI_2_(18)</Tag>
+        </IOChannel>
+        <IOChannel Number="18">
+          <Address>%I6.2</Address>
+          <Tag>DI_2_(19)</Tag>
+        </IOChannel>
+        <IOChannel Number="19">
+          <Address>%I6.3</Address>
+          <Tag>DI_2_(20)</Tag>
+        </IOChannel>
+        <IOChannel Number="20">
+          <Address>%I6.4</Address>
+          <Tag>DI_2_(21)</Tag>
+        </IOChannel>
+        <IOChannel Number="21">
+          <Address>%I6.5</Address>
+          <Tag>DI_2_(22)</Tag>
+        </IOChannel>
+        <IOChannel Number="22">
+          <Address>%I6.6</Address>
+          <Tag>DI_2_(23)</Tag>
+        </IOChannel>
+        <IOChannel Number="23">
+          <Address>%I6.7</Address>
+          <Tag>DI_2_(24)</Tag>
+        </IOChannel>
+        <IOChannel Number="24">
+          <Address>%I7.0</Address>
+          <Tag>DI_2_(25)</Tag>
+        </IOChannel>
+        <IOChannel Number="25">
+          <Address>%I7.1</Address>
+          <Tag>DI_2_(26)</Tag>
+        </IOChannel>
+        <IOChannel Number="26">
+          <Address>%I7.2</Address>
+          <Tag>DI_2_(27)</Tag>
+        </IOChannel>
+        <IOChannel Number="27">
+          <Address>%I7.3</Address>
+          <Tag>DI_2_(28)</Tag>
+        </IOChannel>
+        <IOChannel Number="28">
+          <Address>%I7.4</Address>
+          <Tag>DI_2_(29)</Tag>
+        </IOChannel>
+        <IOChannel Number="29">
+          <Address>%I7.5</Address>
+          <Tag>DI_2_(30)</Tag>
+        </IOChannel>
+        <IOChannel Number="30">
+          <Address>%I7.6</Address>
+          <Tag>DI_2_(31)</Tag>
+        </IOChannel>
+        <IOChannel Number="31">
+          <Address>%I7.7</Address>
+          <Tag>DI_2_</Tag>
+        </IOChannel>
+      </Module>
+      <Module Name="DO 8x24VDC/2A_1">
+        <IOChannel Number="0">
+          <Address>%Q0.0</Address>
+          <Tag>DO_1_(1)</Tag>
+        </IOChannel>
+        <IOChannel Number="1">
+          <Address>%Q0.1</Address>
+          <Tag>DO_1_(2)</Tag>
+        </IOChannel>
+        <IOChannel Number="2">
+          <Address>%Q0.2</Address>
+          <Tag>DO_1_(3)</Tag>
+        </IOChannel>
+        <IOChannel Number="3">
+          <Address>%Q0.3</Address>
+          <Tag>DO_1_(4)</Tag>
+        </IOChannel>
+        <IOChannel Number="4">
+          <Address>%Q0.4</Address>
+          <Tag>DO_1_(5)</Tag>
+        </IOChannel>
+        <IOChannel Number="5">
+          <Address>%Q0.5</Address>
+          <Tag>DO_1_(6)</Tag>
+        </IOChannel>
+        <IOChannel Number="6">
+          <Address>%Q0.6</Address>
+          <Tag>DO_1_(7)</Tag>
+        </IOChannel>
+        <IOChannel Number="7">
+          <Address>%Q0.7</Address>
+          <Tag>DO_1_</Tag>
+        </IOChannel>
+      </Module>
+    </Rack>
+  </Station>
+</Stations>

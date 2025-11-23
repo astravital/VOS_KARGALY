@@ -1,0 +1,122 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<Tagtable name='ControllerTagsFolder'>
+  <!-- exported by 'Totally Integrated Automation Portal' version 2000.0.9501.1   © 2004-2016 Siemens AG - all rights reserved -->
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Фильтр - 1. Датчик уровня. Данные с поля. Поз - 450' addr='%IW256'>FL_01_LT_450_XQ11</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Фильтр - 3. Датчик уровня. Данные с поля. Поз - 452' addr='%IW258'>FL_03_LT_452_XQ11</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='фильтр - 5.  Датчик уровня. Данные с поля. Поз - 454' addr='%IW260'>FL_05_LT_454_XQ11</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='фильтр - 7.  Датчик уровня. Данные с поля. Поз - 456' addr='%IW262'>FL_07_LT_456_XQ11</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='фильтр - 2.  Датчик уровня. Данные с поля. Поз - 451' addr='%IW264'>FL_02_LT_451_XQ11</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='фильтр -  4.  Датчик уровня. Данные с поля. Поз - 453' addr='%IW266'>FL_04_LT_453_XQ11</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='фильтр -  6.  Датчик уровня. Данные с поля. поз - 455' addr='%IW268'>FL_06_LT_455_XQ11</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='фильтр -  8.  Датчик уровня. Данные с поля. поз - 457' addr='%IW270'>FL_08_LT_457_XQ11</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Расход воды на фильтры от горизонтльных отстойников. Поз - 400' addr='%IW272'>FL_00_FT_400_ XQ11</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Расход фильтрованной воды. Поз - 401' addr='%IW274'>B2</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Концетрация железа в фильтрованной воде. Поз - 501' addr='%IW276'>B3</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%IW278'>IW278</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Давление промывной воды на фильтры после насосов. Поз - 210' addr='%IW280'>B5</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Давление после насосов на заполнение промывного резеруара. Поз - 211' addr='%IW282'>B6</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Давление воздуха после воздуходувки. Поз - 212' addr='%IW284'>B7</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Температура исходной воды на отстройник. Поз - G010' addr='%IW286'>B8</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Уровень воды в горизонтальном отстойнике. Коридор - 1. Поз - G450a' addr='%IW288'>C1</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Уровень воды в горизонтальном отстойнике. Коридор - 2. Поз - G451a' addr='%IW290'>C2</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Уровень воды в горизонтальном отстойнике. Коридор - 3. Поз - G452a' addr='%IW292'>C3</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Расход промывной воды на фильтры. Поз - 402' addr='%IW294'>C4</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%IW296'>IW296</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Уровень в резервуаре промывной воды. Поз - 1' addr='%IW298'>C6</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Уровень в резервуаре чистой воды №1. Поз 1-1' addr='%IW300'>C7</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Уровень в резервуаре чистой воды №2. Поз 1-2' addr='%IW302'>C8</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Сооружение промывочной воды. Давление на напоре насосов шламовой воды. Поз -  R301' addr='%IW304'>D1</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Сооружение промывочной воды. Давление на напоре насосов отстойной воды. Поз -  R302' addr='%IW306'>D2</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Сооружение промывочной воды.Уровень воды в баке. Секция - 1. Поз -  R455' addr='%IW308'>D3</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Сооружение промывочной воды.Уровень воды в баке. Секция - 2. Поз -  R456' addr='%IW310'>D4</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Сооружение промывочной воды.Уровень воды в баке. Секция - 3. Поз -  R457' addr='%IW312'>D5</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Сооружение промывочной воды.Уровень воды в баке. Секция - 4. Поз -  R457' addr='%IW314'>D6</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Расход в трубе отстоенных вод. Поз - R400' addr='%IW316'>D7</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%IW318'>IW318</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Давление воды на напоре хозяйственно пит. насовов. Поз - N301' addr='%IW320'>E1</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Давление воды на напоре хозяйственно пит. насовов. Поз - N302' addr='%IW322'>E2</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Расход в трубе чистой воды к потребителям. Поз - N400' addr='%IW324'>E3</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Расход в трубе сточных вод. Поз. N401' addr='%IW326'>E4</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%IW328'>IW328</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%IW330'>IW330</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%IW332'>IW332</Tag>
+  <Tag type='Int' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%IW334'>IW334</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень воды воды в горизонтальном отстойнике. Коридор - 1. Поз G450' addr='%I0.0'>DI_1_01</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень воды воды в горизонтальном отстойнике. Коридор - 2. Поз G451' addr='%I0.1'>DI_1_02</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень воды воды в горизонтальном отстойнике. Коридор - 3. Поз G453' addr='%I0.2'>DI_1_03</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень воды в верхнем смесителе - 1. Поз - G456' addr='%I0.3'>DI_1_04</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень воды в верхнем смесителе - 2. Поз - G457' addr='%I0.4'>DI_1_05</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень воды в дренажном приямке. Поз - G458' addr='%I0.5'>DI_1_06</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень воды в приямке реагентов. Поз - G459' addr='%I0.6'>DI_1_07</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Высокий уровень воды в резервуаре чистой воды - 2. Поз - 5-1' addr='%I0.7'>DI_1_08</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Отключение хозяйственно питьевых насосов по уровню в РЧВ - 1. Поз - 3-1' addr='%I1.0'>DI_1_09</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Отключение пожарных насосов по уровню в РЧВ - 1. Поз - 3-1' addr='%I1.1'>DI_1_10</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный низкий уровень в РЧВ №1. Поз - 2-1' addr='%I1.2'>DI_1_11</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Отключение хоз пит насосов по уровню РЧВ №1. Поз 2-1' addr='%I1.3'>DI_1_12</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный верхний уровень воды в РЧВ №1. Поз - 2-1' addr='%I1.4'>DI_1_13</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Высокий уровень воды в РЧВ №2. Поз - 5-2' addr='%I1.5'>DI_1_14</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Отключение хоз питьевых нсосов по уровню РЧВ-2. Поз. 3-2' addr='%I1.6'>DI_1_15</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Отключение пожарных насосов по уровню в РЧВ-2. Поз-32' addr='%I1.7'>DI_1_16</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный нижний уровень воды в РЧВ-2. Поз. 2-2' addr='%I2.0'>DI_1_17</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Отключение хоз питьевых насосов по уровню РЧВ-2.  Поз - 2-2' addr='%I2.1'>DI_1_18</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аврийный верхний уровень воды в РЧВ-2. Поз - 2-2' addr='%I2.2'>DI_1_19</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный нижний уровень воды в РПВ. Поз - 2' addr='%I2.3'>DI_1_20</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Средний уровень воды в РПВ. Поз - 2' addr='%I2.4'>DI_1_01(20)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный верхний уровень воды в РПВ. Поз - 2' addr='%I2.5'>DI_1_01(21)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Отключение насосов на промывку филров по уровню в РПВ. Поз - 3' addr='%I2.6'>DI_1_01(22)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Отключение насов на заполнение РПВ по уровню. Поз - 3' addr='%I2.7'>DI_1_01(23)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень в дренажном приямке в сооружении повторного использования промывной воды. Поз - R459' addr='%I3.0'>DI_1_01(24)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварйный уровень в баке повторного использования промывной воды. Секция -1. Поз - R455' addr='%I3.1'>DI_1_01(25)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварйный уровень в баке повторного использования промывной воды. Секция -2. Поз - R456' addr='%I3.2'>DI_1_01(26)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварйный уровень в баке повторного использования промывной воды. Секция - 3. Поз - R457' addr='%I3.3'>DI_1_01(27)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварйный уровень в баке повторного использования промывной воды. Секция - 4. Поз - R458' addr='%I3.4'>DI_1_01(28)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень в дренажном приямке хлораторной. Поз -N450' addr='%I3.5'>DI_1_01(29)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Авария РУ-10 Кв' addr='%I3.6'>DI_1_01(30)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Авария РУ-0,4 Кв' addr='%I3.7'>DI_1_01(31)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень в воды в фильтре - 1. Поз - 450' addr='%I4.0'>DI_2_(1)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень в воды в фильтре - 3. Поз - 452' addr='%I4.1'>DI_2_(2)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I7.7'>DI_2_</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень в воды в фильтре - 5. Поз - 454' addr='%I4.2'>DI_2_(3)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень в воды в фильтре - 7. Поз - 456' addr='%I4.3'>DI_2_(4)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень в воды в фильтре - 2. Поз - 451' addr='%I4.4'>DI_2_(5)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень в воды в фильтре - 4. Поз - 453' addr='%I4.5'>DI_2_(6)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень в воды в фильтре - 6. Поз - 455' addr='%I4.6'>DI_2_(7)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень в воды в фильтре - 8. Поз - 457' addr='%I4.7'>DI_2_(8)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Аварийный уровень в дренажном приямке фильтровальной. Поз - 458' addr='%I5.0'>DI_2_(9)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Работа блока безперебойного питания UPS. Поз - KV' addr='%I5.1'>DI_2_(10)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Квитироваине звуковой сигнализации. Поз - SB' addr='%I5.2'>DI_2_(11)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Отключене газа в котельной.' addr='%I5.3'>DI_2_(12)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Авария в котельной' addr='%I5.4'>DI_2_(13)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I5.5'>DI_2_(14)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I5.6'>DI_2_(15)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I5.7'>DI_2_(16)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I6.0'>DI_2_(17)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I6.1'>DI_2_(18)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I6.2'>DI_2_(19)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I6.3'>DI_2_(20)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I6.4'>DI_2_(21)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I6.5'>DI_2_(22)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I6.6'>DI_2_(23)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I6.7'>DI_2_(24)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I7.0'>DI_2_(25)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I7.1'>DI_2_(26)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I7.2'>DI_2_(27)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I7.3'>DI_2_(28)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I7.4'>DI_2_(29)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I7.5'>DI_2_(30)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%I7.6'>DI_2_(31)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%Q0.7'>DO_1_</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%Q0.0'>DO_1_(1)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Звуковая сигнализация' addr='%Q0.1'>DO_1_(2)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%Q0.2'>DO_1_(3)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%Q0.3'>DO_1_(4)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%Q0.4'>DO_1_(5)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%Q0.5'>DO_1_(6)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='Резерв' addr='%Q0.6'>DO_1_(7)</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='ЭПЗ-37. Дистанция (true)' addr='%I12.0'>MOV_37_X23</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='ЭПЗ-37. Открыта (true)' addr='%I12.1'>MOV_37_X21</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='ЭПЗ-37. Закрыта (true)' addr='%I12.2'>MOV_37_X22</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='ЭПЗ-37. Авария (true)' addr='%I12.3'>MOV_37_X15</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='ЭПЗ-37. Открыть' addr='%Q12.0'>MOV_37_Y31</Tag>
+  <Tag type='Bool' hmiVisible='True' hmiWriteable='True' hmiAccessible='True' remark='ЭПЗ-37. Закрыть' addr='%Q12.1'>MOV_37_Y32</Tag>
+</Tagtable>

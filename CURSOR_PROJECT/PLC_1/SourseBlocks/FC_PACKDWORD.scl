@@ -1,0 +1,89 @@
+﻿FUNCTION "FC_PACKDWORD" : DWord
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      B0 : Bool;
+      B1 : Bool;
+      B2 : Bool;
+      B3 : Bool;
+      B4 : Bool;
+      B5 : Bool;
+      B6 : Bool;
+      B7 : Bool;
+      B8 : Bool;
+      B9 : Bool;
+      B10 : Bool;
+      B11 : Bool;
+      B12 : Bool;
+      B13 : Bool;
+      B14 : Bool;
+      B15 : Bool;
+      B16 : Bool;
+      B17 : Bool;
+      B18 : Bool;
+      B19 : Bool;
+      B20 : Bool;
+      B21 : Bool;
+      B22 : Bool;
+      B23 : Bool;
+      B24 : Bool;
+      B25 : Bool;
+      B26 : Bool;
+      B27 : Bool;
+      B28 : Bool;
+      B29 : Bool;
+      B30 : Bool;
+      B31 : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      GW : DWord;
+      INDEX : Int;
+      BS : Array[0..31] of Bool;
+   END_VAR
+
+
+BEGIN
+	;    
+	    #GW:=0; //GW IN TO ZERO
+	    #BS[0]:=#B0;
+	    #BS[1]:=#B1;
+	    #BS[2]:=#B2;
+	    #BS[3]:=#B3;
+	    #BS[4]:=#B4;
+	    #BS[5]:=#B5;
+	    #BS[6]:=#B6;
+	    #BS[7]:=#B7;
+	    #BS[8]:=#B8;
+	    #BS[9]:=#B9;
+	    #BS[10]:=#B10;
+	    #BS[11]:=#B11;
+	    #BS[12]:=#B12;
+	    #BS[13]:=#B13;
+	    #BS[14]:=#B14;
+	    #BS[15]:=#B15;
+	    #BS[16]:=#B16;
+	    #BS[17]:=#B17;
+	    #BS[18]:=#B18;
+	    #BS[19]:=#B19;
+	    #BS[20]:=#B20;
+	    #BS[21]:=#B21;
+	    #BS[22]:=#B22;
+	    #BS[23]:=#B23;
+	    #BS[24]:=#B24;
+	    #BS[25]:=#B25;
+	    #BS[26]:=#B26;
+	    #BS[27]:=#B27;
+	    #BS[28]:=#B28;
+	    #BS[29]:=#B29;
+	    #BS[30]:=#B30;
+	    #BS[31]:=#B31;
+	    FOR #INDEX := 0 TO 31 BY 1 DO
+	        IF #BS[#INDEX]THEN
+	            #GW:=#GW OR (SHL(IN:=DW#16#1,N:=#INDEX));  
+	        END_IF;
+	    END_FOR;       
+	        #FC_PACKDWORD := #GW; //RESULT
+	    
+END_FUNCTION
+

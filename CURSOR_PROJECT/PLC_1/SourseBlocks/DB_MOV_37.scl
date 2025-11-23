@@ -1,0 +1,701 @@
+﻿FUNCTION "FC_DKBIN" : Void
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      GW : Bool;
+      DRK : Int;
+   END_VAR
+
+   VAR_IN_OUT 
+      RES : Bool;
+      DK : Int;
+   END_VAR
+
+
+BEGIN
+	
+	    IF #DK>=#DRK THEN //ЕСЛИ ЗНАЧЕНИЕ ЦИКЛА БОЛЬШЕ ИЛИ РАВНО МАКСИМАЛЬНОЬУ КОЛИЧЕСТВУ ЦИКЛОВ ТО..
+	        #RES:=#GW;//ПРИСВОИТЬ РЕЗУЛЬТАТУ ЗНАЧЕНИЕ БИНАРНОГО СИГНАЛА
+	        #DK:=0;//ОБНУЛИТЬ ЗНАЧЕНИЕ ЦИКЛА
+	    ELSE
+	        IF #RES <> #GW THEN //ЕСЛИ ВЫХОД БИНАРНОГО СИГНАЛА НЕ СОВПАДАЕТ СО ЗНАЧЕНИЕМ БИНАРНОГО СИГНАЛА ТО...
+	            #DK:=#DK+1;//УВЕЛИЧИТЬ ЗНАЧЕНИЕ ЦИКЛА НА 1 И СОХРАНИТЬ
+	        ELSE //ИНАЧЕ ОБНУЛИТЬ ЗНАЧЕНИЕ ЦИКЛА
+	            #DK:=0;    
+	        END_IF;        
+	    END_IF;
+	
+END_FUNCTION
+
+FUNCTION "FC_PACKDWORD" : DWord
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      B0 : Bool;
+      B1 : Bool;
+      B2 : Bool;
+      B3 : Bool;
+      B4 : Bool;
+      B5 : Bool;
+      B6 : Bool;
+      B7 : Bool;
+      B8 : Bool;
+      B9 : Bool;
+      B10 : Bool;
+      B11 : Bool;
+      B12 : Bool;
+      B13 : Bool;
+      B14 : Bool;
+      B15 : Bool;
+      B16 : Bool;
+      B17 : Bool;
+      B18 : Bool;
+      B19 : Bool;
+      B20 : Bool;
+      B21 : Bool;
+      B22 : Bool;
+      B23 : Bool;
+      B24 : Bool;
+      B25 : Bool;
+      B26 : Bool;
+      B27 : Bool;
+      B28 : Bool;
+      B29 : Bool;
+      B30 : Bool;
+      B31 : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      GW : DWord;
+      INDEX : Int;
+      BS : Array[0..31] of Bool;
+   END_VAR
+
+
+BEGIN
+	;    
+	    #GW:=0; //GW IN TO ZERO
+	    #BS[0]:=#B0;
+	    #BS[1]:=#B1;
+	    #BS[2]:=#B2;
+	    #BS[3]:=#B3;
+	    #BS[4]:=#B4;
+	    #BS[5]:=#B5;
+	    #BS[6]:=#B6;
+	    #BS[7]:=#B7;
+	    #BS[8]:=#B8;
+	    #BS[9]:=#B9;
+	    #BS[10]:=#B10;
+	    #BS[11]:=#B11;
+	    #BS[12]:=#B12;
+	    #BS[13]:=#B13;
+	    #BS[14]:=#B14;
+	    #BS[15]:=#B15;
+	    #BS[16]:=#B16;
+	    #BS[17]:=#B17;
+	    #BS[18]:=#B18;
+	    #BS[19]:=#B19;
+	    #BS[20]:=#B20;
+	    #BS[21]:=#B21;
+	    #BS[22]:=#B22;
+	    #BS[23]:=#B23;
+	    #BS[24]:=#B24;
+	    #BS[25]:=#B25;
+	    #BS[26]:=#B26;
+	    #BS[27]:=#B27;
+	    #BS[28]:=#B28;
+	    #BS[29]:=#B29;
+	    #BS[30]:=#B30;
+	    #BS[31]:=#B31;
+	    FOR #INDEX := 0 TO 31 BY 1 DO
+	        IF #BS[#INDEX]THEN
+	            #GW:=#GW OR (SHL(IN:=DW#16#1,N:=#INDEX));  
+	        END_IF;
+	    END_FOR;       
+	        #FC_PACKDWORD := #GW; //RESULT
+	    
+END_FUNCTION
+
+FUNCTION_BLOCK "FB_MOV01"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      X21 : Bool;
+      X22 : Bool;
+      X43 : Bool;
+      X23 : Bool;
+      X15 : Bool;
+      EAO : Bool;
+      EAC : Bool;
+      EWO : Bool;
+      EWC : Bool;
+      SFLT : Bool;
+      PAZ : Bool;
+   END_VAR
+
+   VAR_OUTPUT 
+      Y31 : Bool;
+      Y32 : Bool;
+      Y33 : Bool;
+      GO : Bool;
+      GC : Bool;
+      GR : Bool;
+      GNO : Bool;
+      GNC : Bool;
+      GF : Bool;
+      WO : Bool;
+      WC : Bool;
+      GMD : Bool;
+   END_VAR
+
+   VAR 
+      PHA : Int := 3;
+      ST : Int;
+      MODE : Int;
+      TZ0 : Int := 50;
+      TZ1 : Int := 50;
+      TZ2 : Int := 50;
+      TZZ0 : Int;
+      TZZ1 : Int;
+      TZZ2 : Int;
+      GW1 : DWord;
+      GW2 : DWord;
+      T_01 : Time := T#5S;
+      T_02 : Time := T#2S;
+      T_03 : Time := T#5M;
+      T_04 : Time := T#5M;
+      T_05 : Time := T#2S;
+      T_06 : Time := T#2S;
+      T_07 : Time := T#2S;
+      T_ON01 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON02 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON03 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON04 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON05 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON06 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON07 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON08 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON09 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON10 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON11 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON12 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON13 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      T_ON14 {InstructionName := 'TON'; LibVersion := '1.0'; S7_SetPoint := 'False'} : TON;
+      KU : Bool;
+      WU : Bool;
+      J_RevOp : Bool;
+      J_RevCl : Bool;
+      J_AutSt : Bool;
+      J_ImitOp : Bool;
+      J_ImitCl : Bool;
+      J_ImitSt : Bool;
+      J_ImitRevOp : Bool;
+      J_ImitRevCl : Bool;
+      J_ImitAutSt : Bool;
+      KO : Bool;
+      KC : Bool;
+      KS : Bool;
+      WS : Bool;
+      WMJ : Bool;
+      GRL : Bool;
+      GRO : Bool;
+      GRC : Bool;
+      GI : Bool;
+      GX : Bool;
+      GAO : Bool;
+      GAC : Bool;
+      GWK : Bool;
+      GNO1 : Bool;
+      KMJ : Bool;
+      GNO2 : Bool;
+      GNO3 : Bool;
+      GNO4 : Bool;
+      GNC1 : Bool;
+      GNC2 : Bool;
+      GNC3 : Bool;
+      GNC4 : Bool;
+      GNS : Bool;
+      GYO : Bool;
+      GYC : Bool;
+      GRX : Bool;
+      GS2 : Bool;
+      GSL : Bool;
+      GYS : Bool;
+      GX1 : Bool;
+      GMJ : Bool;
+      T_QResCMD : Bool;
+      T_Q_GWK : Bool;
+      StartT_ResCMD : Bool;
+      StartT1 : Bool;
+      StartT2 : Bool;
+      StartT3 : Bool;
+      StartT4 : Bool;
+      StartT5 : Bool;
+      StartT6 : Bool;
+      StartT7 : Bool;
+      StartT8 : Bool;
+      StartT9 : Bool;
+      StartT10 : Bool;
+      StartT11 : Bool;
+      StartT12 : Bool;
+      StartT13 : Bool;
+      StartT14 : Bool;
+      J_X43 : Bool;
+      J_KO : Bool;
+      J_KC : Bool;
+      J_KS : Bool;
+      J_KMJ_GMK : Bool;
+      J_GR : Bool;
+      J_GMD : Bool;
+      JmpStep9 : Bool;
+      J_X15 : Bool;
+   END_VAR
+
+
+BEGIN
+	
+	        "FC_DKBIN"(GW :=#GWK, DRK := #TZ0, RES := #T_Q_GWK, DK := #TZZ0);        
+	        "FC_DKBIN"(GW :=#StartT_ResCMD, DRK := #TZ1, RES := #T_QResCMD, DK := #TZZ1);
+	        #T_ON01(IN := #StartT1, PT := #T_05);//Контроль установки флага "неопределенное состояния"
+	        #T_ON02(IN := #StartT2, PT := #T_01);//Контроль времени при реверсе на открытие
+	        #T_ON03(IN := #StartT3, PT := #T_01);//Контроль времени при реверсе на закрытие
+	        #T_ON04(IN := #StartT4, PT := #T_02);//Контроль схода с концевика при включении МП открытия
+	        #T_ON05(IN := #StartT5, PT := #T_03);//Контроль времени открытия
+	        #T_ON06(IN := #StartT6, PT := #T_06);//Контроль времени при не санкц пропадании сигнала с МП
+	        #T_ON07(IN := #StartT7, PT := #T_01);//Контроль времени включения МП открытия
+	        #T_ON08(IN := #StartT8, PT := #T_02);//Контроль схода с концевика при включении МП закрытия
+	        #T_ON09(IN := #StartT9, PT := #T_04);//Контроль времени закрытия
+	        #T_ON10(IN := #StartT10, PT := #T_06);//Контроль времени при не санкц пропадании сигнала с МП
+	        #T_ON11(IN := #StartT11, PT := #T_01);//Контроль времени включения МП закрытия
+	        #T_ON12(IN := #StartT12, PT := #T_01);//Контроль времени отключения МП открытия/закрытия
+	        #T_ON13(IN := #StartT13, PT := #T_03);//Контроль времени открытия/закрытия в режиме имитации
+	        #T_ON14(IN := #StartT14, PT := #T_07);//Контроль времени на сброс всех аварий
+	        IF #GAO OR #GAC THEN #PHA:=7; END_IF;
+	        CASE #PHA OF
+	            0:  #KC:=1;//ЗАКРЫТЬ
+	            1:  #KS:=1;//СТОП
+	            2:  #KO:=1;//ОТКРЫТЬ
+	            3:  #KC:=0; 
+	                #KS:=0; 
+	                #KO:=0;//СБРОС ВСЕХ КОМАНД
+	                #KU:=0;
+	            4:  #KMJ:=1;//ВКЛЮЧИТЬ РЕЖИМ ИМИТАЦИИ
+	            5:  #KMJ:=0;//ОТКЛЮЧИТЬ РЕЖИМ ИМИТАЦИИ
+	            6:  IF NOT #WU THEN 
+	                    #KU:=1;//ДЕБЛОКИРОВКА
+	                END_IF;  
+	        END_CASE;
+	        //СБРОС КОМАНД PHA
+	        #StartT_ResCMD:=#KC OR #KS OR #KO OR #KU OR #GAO OR #GAC; //ЕСЛИ ОТКРЫТЬ ИЛИ ЗАКРЫТЬ ИЛИ СТОП
+	        IF #T_QResCMD THEN //ЕСЛИ ОТРАБОТАЛ ТАЙМЕР ТО..
+	            #StartT_ResCMD:=0;//СБРОСИТЬ ТАЙМЕР
+	            #PHA:=3;//ПРОИЗВЕСТИ СБРОС ВСЕХ КОМАНД РНА
+	            #GAO:=0;
+	            #GAC:=0;
+	        END_IF;          
+	        //--------- Шаг 1 -----------
+	        //Установка режима управления
+	        #GWK:=#GWK & (NOT #T_Q_GWK);// ЕСЛИ НЕТ КОМАНДЫ И ТАЙМЕР НЕТ КОМАНДЫ ЕЩЕ НЕ ОТРАБОТАЛ
+	        "FC_DKBIN"(GW :=#X15, DRK := #TZ2, RES := #J_X15, DK := #TZZ2);
+	        #GMJ:=#KMJ & (NOT #WMJ OR #GMJ); 
+	        IF NOT #KMJ THEN 
+	            #J_ImitOp:=0; 
+	            #J_ImitCl:=0; 
+	            #J_ImitSt:=0; 
+	            #J_ImitRevOp:=0; 
+	            #J_ImitRevCl:=0; 
+	            #J_ImitAutSt:=0; 
+	        END_IF;
+	        //--------- Шаг 2 -----------
+	        //Контроль состояния
+	        #GMD:=#GMJ OR (NOT #GMJ &#X23);
+	        IF #GMJ THEN 
+	            #GX:=0; 
+	            #GF:=0; 
+	            #GNS:=0; 
+	            #GNC:=0; 
+	            #GNC1:=0; 
+	            #GNC2:=0; 
+	            #GNC3:=0; 
+	            #GNC4:=0; 
+	            #GNO:=0; 
+	            #GNO1:=0; 
+	            #GNO2:=0; 
+	            #GNO3:=0; 
+	            #GNO4:=0;
+	            #GI:=NOT (#GC OR #GO) OR #GI;
+	            #GR:=#GRO OR #GRC;
+	        ELSE 
+	            #GR:=#X43;
+	            #GRL:=#X43&(NOT #GMD); 
+	            #GNS:=#X43&#GNS;
+	            #GS2:=(#SFLT OR #J_X15)&#GS2 OR (NOT #SFLT & (#X21 & #X22)&#J_X15);
+	            #GX1:=#SFLT;
+	            #GF:=NOT #SFLT & #J_X15;
+	            IF #SFLT THEN
+	                #GNC1:=0; #GNC2:=0; #GNC3:=0; #GNC4:=0; 
+	                #GNO1:=0; #GNO2:=0; #GNO3:=0; #GNO4:=0;
+	                #GI:=0; #GO:=0; #GC:=0; #GX:=1; 
+	            ELSE
+	                IF NOT (#X21 OR #X22) THEN
+	                    #GI:=1; #GC:=0;  #GO:=0; 
+	                END_IF;
+	                IF #X22&(NOT #X21) THEN  
+	                    #GC:=1; 
+	                    #GI:=0;  
+	                    #GO:=0;
+	                END_IF;
+	                IF (NOT #X22)&#X21 THEN 
+	                    #GO:=1; 
+	                    #GC:=0;  
+	                    #GI:=0;
+	                END_IF;                
+	                IF NOT (#X21 & #X22) THEN
+	                    IF #T_ON14.Q THEN
+	                    #GX:=0;  
+	                    #GSL:=0;
+	                    #GNC:=0; #GNC1:=0; #GNC2:=0; #GNC3:=0; #GNC4:=0;
+	                    #GNO:=0; #GNO1:=0; #GNO2:=0; #GNO3:=0; #GNO4:=0;
+	                    #StartT14:=0;
+	                    END_IF;
+	                END_IF;                 
+	                IF NOT #GR & #J_GR & #GMD THEN
+	                   #GSL:=#X21 & #X22 & (NOT #GYS);
+	                END_IF;
+	                #StartT1:= #X21 AND #X22;        
+	            END_IF;
+	        END_IF;          
+	        #J_GR:=#GR;
+	        #J_GMD:=#GMD;
+	        //------------------- Шаг 3 ------------------
+	        //Команда открыть задвижку  
+	        IF (#KO OR #EAO) & NOT #J_KO & NOT #WO THEN
+	            #GAO:=#EAO OR #GAO;
+	            IF NOT #GMJ THEN
+	                #GNC:=0; #GNC1:=0; #GNC2:=0; #GNC3:=0; #GNC4:=0; 
+	                #GNO:=0; #GNO1:=0; #GNO2:=0; #GNO3:=0; #GNO4:=0;
+	                #J_AutSt:=#GR OR #J_AutSt;
+	                #J_RevOp:=#GR OR #J_RevOp;
+	                #Y31:=(NOT #GR) OR #Y31;
+	                #GYO:=(NOT #GR) OR #GYO;    
+	            END_IF;
+	            #J_ImitAutSt:=#GMJ&#GRC OR #J_ImitAutSt;
+	            #J_ImitRevOp:=#GMJ&#GRC OR #J_ImitRevOp;
+	            #J_ImitOp:=#GMJ&(NOT #GRC);
+	            #JmpStep9:=#GMJ;
+	        END_IF;
+	        IF (#KO OR #EAO) & NOT #J_KO THEN
+	            #GWK:=#WO;     
+	        END_IF;
+	        #J_KO:=#KO OR #EAO;
+	        #StartT2:=(#J_ImitRevOp & NOT #GRC) OR (#J_RevOp & NOT #GR);
+	        IF #T_ON02.Q THEN
+	            #StartT2:=0;
+	            #J_ImitOp:=#J_ImitRevOp OR #J_ImitOp;
+	            #JmpStep9:=#J_ImitOp;  
+	            #J_ImitRevOp:=(NOT #J_ImitRevOp & #J_ImitRevOp);
+	            IF #J_RevOp THEN
+	                #J_RevOp:=0;
+	                #Y31:=1;
+	                #GYO:=1;    
+	            END_IF;  
+	        END_IF;
+	        //------------------- Шаг 4 ------------------
+	        //Команда закрыть задвижку  
+	        IF (#KC OR #EAC)& NOT #J_KC & NOT #WC THEN
+	            #GAC:=#EAC OR #GAC;
+	            IF NOT #GMJ THEN
+	                #GNC:=0; #GNC1:=0; #GNC2:=0; #GNC3:=0; #GNC4:=0; 
+	                #GNO:=0; #GNO1:=0; #GNO2:=0; #GNO3:=0; #GNO4:=0;
+	                #J_AutSt:=#GR OR #J_AutSt;
+	                #J_RevCl:=#GR OR #J_RevCl;
+	                #Y32:=(NOT #GR) OR #Y32;
+	                #GYC:=(NOT #GR) OR #GYC;    
+	            END_IF;
+	            #J_ImitAutSt:=#GMJ&#GRO OR #J_ImitAutSt;
+	            #J_ImitRevCl:=#GMJ&#GRO OR #J_ImitRevCl;
+	            #J_ImitCl:=#GMJ&(NOT #GRO);
+	            #JmpStep9:=#GMJ;
+	        END_IF;
+	        IF (#KC OR #EAC) & NOT #J_KC THEN
+	            #GWK:=#WC;   
+	        END_IF;
+	        #J_KC:=#KC OR #EAC;
+	        #StartT3:=(#J_ImitRevCl & NOT #GRO) OR (#J_RevCl & NOT #GR);
+	        IF #T_ON03.Q THEN
+	            #StartT3:=0;
+	            #J_ImitCl:=#J_ImitRevCl OR #J_ImitCl;
+	            #JmpStep9:=#J_ImitCl;  
+	            #J_ImitRevCl:=(NOT #J_ImitRevCl & #J_ImitRevCl);
+	            IF #J_RevCl THEN
+	                #J_RevCl:=0;
+	                #Y32:=1;
+	                #GYC:=1;    
+	            END_IF;  
+	        END_IF;
+	        //------------------- Шаг 5 ------------------
+	        //Проверка выполнения команды "открыть"  
+	        IF NOT #GMJ THEN
+	            IF NOT (#X43 OR #GYO) THEN 
+	                #GRO:=0; 
+	                #GAO:=0; 
+	            END_IF; 
+	            #StartT4:=#GYO&#GRO&#X43&#GC;
+	            #StartT5:=#GYO&#GRO&#X43&(NOT #GC)&(NOT #GO);
+	            IF #GYO&#GRO&#X43&(NOT #GC)&#GO OR #GYO&#GRO&(NOT #X43)&#GO OR #GYO&(NOT #GRO)&#X43  THEN 
+	                #Y31:=0; 
+	            END_IF;
+	            IF #GYO&#GRO&#X43&(NOT #GC)&#GO OR #GYO&#GRO&(NOT #X43)&#GO THEN 
+	                #GYO:=0; 
+	            END_IF;
+	            #GRO:= #GYO &(NOT #GRO)&#X43 OR #GRO;      
+	            #StartT6:=#GYO&#GRO&(NOT #X43)&(NOT #GO);
+	            #StartT7:=#GYO&(NOT #GRO)&(NOT #X43);      
+	            //------------------- Шаг 6 ------------------
+	            //Проверка выполнения команды "закрыть"  
+	            IF NOT (#X43 OR #GYC) THEN 
+	                #GRC:=0; #GAC:=0; 
+	            END_IF; 
+	            #StartT8:=#GYC&#GRC&#X43&#GO;
+	            #StartT9:=#GYC&#GRC&#X43&(NOT #GO)&(NOT #GC);
+	            IF #GYC&#GRC&#X43&(NOT #GO)&#GC OR #GYC&#GRC&(NOT #X43)&#GC OR #GYC&(NOT #GRC)&#X43  THEN 
+	                #Y32:=0; 
+	            END_IF;
+	            IF #GYC&#GRC&#X43&(NOT #GO)&#GC OR #GYC&#GRC&(NOT #X43)&#GC THEN 
+	                #GYC:=0; 
+	            END_IF;
+	            #GRC:= #GYC &(NOT #GRC)&#X43 OR #GRC;      
+	            #StartT10:=#GYC&#GRC&(NOT #X43)&(NOT #GC);
+	            #StartT11:=#GYC&(NOT #GRC)&(NOT #X43);
+	        END_IF;      
+	        //------------------- Шаг 7 ------------------
+	        //Команда стоп задвижки  
+	        IF #KS & NOT #J_KS & (NOT #WS) OR #J_AutSt THEN     
+	            #J_ImitSt:=#GMJ OR #J_ImitSt; #JmpStep9:=#GMJ;
+	            #J_AutSt:=NOT #J_AutSt & #J_AutSt;
+	            IF NOT #GMJ THEN 
+	                #GYO:=0; #GYC:=0; #GYS:=1; #GNS:=0; #Y33:=1;     
+	            END_IF;     
+	        END_IF;
+	        //------------------- Шаг 8 ------------------
+	        //Проверка выполнения команды "стоп"  
+	        IF NOT #GMJ THEN
+	            #StartT12:=#GYS&#X43;
+	            #GYS:=NOT(#GYS&(NOT #X43))&#GYS;
+	            #Y33:=NOT(#Y33&(NOT #X43))&#Y33;
+	            IF #X43 & (NOT #J_X43) & (NOT (#GMJ OR #GYC OR #GYO OR #PAZ))&#GMD THEN
+	                #J_X43:=1;
+	                #GYS:=1; #Y33:=1; 
+	                #GRX:=1; 
+	            END_IF; 
+	            #J_X43:=#X43;
+	            #GRX:=#X43&#GRX;
+	        END_IF; 
+	        //------------------- Шаг 9 ------------------
+	        //Управление в режиме имитации  
+	        IF #JmpStep9 THEN
+	            #JmpStep9:=0;
+	            #StartT13:=(#J_ImitOp & (NOT #J_ImitCl) & (NOT #GO)) OR ((NOT #J_ImitOp) & (#J_ImitCl) & (NOT #GC));
+	            IF #J_ImitOp & (NOT #J_ImitCl) & (NOT #GO) THEN
+	                #GI:=1; #GRO:=1; #GC:=0;
+	            END_IF;
+	            IF #J_ImitCl & (NOT #J_ImitOp) & (NOT #GC) THEN
+	                #GI:=1; #GRC:=1; #GO:=0;
+	            END_IF;
+	            IF (NOT(#J_ImitOp OR #J_ImitCl) OR #J_ImitOp & (NOT #J_ImitCl) & (NOT #GO) OR #J_ImitCl & (NOT #J_ImitOp) & (NOT #GC)) & (#J_ImitAutSt OR #J_ImitSt) THEN
+	                IF #J_ImitSt THEN 
+	                    #J_ImitRevOp:=0; 
+	                    #J_ImitRevCl:=0; 
+	                END_IF;
+	                #GRO:=0; #GRC:=0; #J_ImitOp:=0; #J_ImitCl:=0; #J_ImitSt:=0; #J_ImitAutSt:=0;
+	            END_IF;
+	        END_IF;        
+	        //------------------- Шаг 10 ------------------
+	        //Вычисление масок команд управления-----*)
+	        #WO:=#GO OR #GRO OR #GYO OR #EWO OR (#GMJ&(#J_ImitRevOp OR #J_ImitRevCl)) OR ((NOT #GMJ)&((NOT #GMD) OR #GF OR #GX OR #J_RevOp OR #J_RevCl OR #SFLT OR #PAZ)) OR #KC OR #KS;
+	        #WC:=#GC OR #GRC OR #GYC OR #EWC OR (#GMJ&(#J_ImitRevOp OR #J_ImitRevCl)) OR ((NOT #GMJ)&((NOT #GMD) OR #GF OR #GX OR #J_RevOp OR #J_RevCl OR #SFLT OR #PAZ)) OR #KO OR #KS;
+	        #WS:=#GMD &(NOT #GMJ)& NOT(#GRO OR #GRC) OR NOT(#GRO OR #GRC)& #GMJ OR #GF OR #PAZ OR (NOT #GMD) OR #KO OR #KC;
+	        #WMJ:=#GMJ OR #GR OR #GYO OR #GYC OR #GYS;
+	        //------------------- Шаг 11 ------------------
+	        //Отработка таймеров
+	        IF #T_ON01.Q THEN  //Контроль установки флага "неопределенное состояние"
+	            #StartT1:=0;
+	            #GI:=0; #GO:=0; #GC:=0; #GX:=1;
+	        END_IF;
+	        IF #T_ON04.Q THEN  //Контроль схода с концевика при включении МП открытия
+	            #StartT4:=0; #GNO2:=1; #GNO:=1; #GYS:=1; #Y33:=1; #Y31:=0; #GYO:=0;
+	        END_IF;
+	        IF #T_ON05.Q THEN //Контроль времени открытия
+	            #StartT5:=0; #GNO4:=1; #GNO:=1; #GYS:=1; #Y33:=1; #Y31:=0; #GYO:=0;
+	        END_IF;
+	        IF #T_ON06.Q THEN //Контроль времени при не санкц пропадании сигнала с МП 
+	            #StartT6:=0; #GNO3:=1; #GNO:=1; #GYS:=1; #Y33:=1; #Y31:=0; #GYO:=0;
+	        END_IF;
+	        IF #T_ON07.Q THEN //Контроль времени включения МП открытия
+	            #StartT7:=0; #GNO1:=1; #GNO:=1; #GYS:=1; #Y33:=1; #Y31:=0; #GYO:=0;
+	        END_IF;
+	        IF #T_ON08.Q THEN //Контроль схода с концевика при включении МП закрытия
+	            #StartT8:=0; #GNC2:=1; #GNC:=1; #GYS:=1; #Y33:=1; #Y32:=0; #GYC:=0;
+	        END_IF;
+	        IF #T_ON09.Q THEN //Контроль времени закрытия
+	            #StartT9:=0; #GNC4:=1; #GNC:=1; #GYS:=1; #Y33:=1; #Y32:=0; #GYC:=0;
+	        END_IF;
+	        IF #T_ON10.Q THEN //Контроль времени при не санкц пропадании сигнала с МП 
+	            #StartT10:=0; #GNC3:=1; #GNC:=1; #GYS:=1; #Y33:=1; #Y32:=0; #GYC:=0;
+	        END_IF;
+	        IF #T_ON11.Q THEN //Контроль времени включения МП закрытия
+	            #StartT11:=0; #GNC1:=1; #GNC:=1; #GYS:=1; #Y33:=1; #Y32:=0; #GYC:=0;
+	        END_IF;
+	        IF #T_ON12.Q THEN
+	            #StartT12:=0; #GNS:=1; #J_RevOp:=0; #J_RevCl:=0; #GYS:=0; #Y33:=0;    
+	        END_IF;
+	        IF #T_ON13.Q THEN
+	            #StartT13:=0;
+	            #GO:=#J_ImitOp OR #GO;
+	            #GC:=#J_ImitCl OR #GC;
+	            #GRO:=0; #GRC:=0; #GI:=0; #J_ImitOp:=0; #J_ImitCl:=0;
+	            IF #J_ImitSt THEN 
+	                #J_ImitRevOp:=0; #J_ImitRevCl:=0; #J_ImitSt:=0; #J_ImitAutSt:=0;    
+	            END_IF;
+	        END_IF;   
+	        #WU:=NOT ( #GX OR #GX1 OR #GF OR #GNO OR #GNC OR #GNS);
+	        IF #KU THEN 
+	            #GX:=0;#GSL:=0; #GNC:=0;#GNO:=0;#GF:=0;#GX1:=0;
+	            #GNC1:=0; #GNC2:=0; #GNC3:=0; #GNC4:=0;
+	            #GNO1:=0; #GNO2:=0; #GNO3:=0; #GNO4:=0;
+	        END_IF;
+	        //------------------- Шаг 12 ------------------
+	        //Упаковка
+	        #GW1:="FC_PACKDWORD"(B0 := #KC
+	                         ,B1 := #KS
+	                         ,B2 := #KO
+	                         ,B3 := NOT #GMD
+	                         ,B4 := #GMD
+	                         ,B5 := #GAO
+	                         ,B6 := #GAC
+	                         ,B7 := #GC
+	                         ,B8 := #GO
+	                         ,B9 := #GI
+	                         ,B10:= #GX
+	                         ,B11:= NOT #GX1
+	                         ,B12:= #GX1
+	                         ,B13:= #GRC
+	                         ,B14:= #GRO
+	                         ,B15:= #GRL
+	                         ,B16:= NOT #GMJ 
+	                         ,B17:= #GMJ
+	                         ,B18:= NOT #GF
+	                         ,B19:= #GF
+	                         ,B20:= NOT #GWK
+	                         ,B21:= #GWK
+	                         ,B22:= NOT #GNO1
+	                         ,B23:= #GNO1  
+	                         ,B24:= NOT #GNO2
+	                         ,B25:= #GNO2
+	                         ,B26:= NOT #GNO3
+	                         ,B27:= #GNO3
+	                         ,B28:= NOT #GNO4 
+	                         ,B29:= #GNO4
+	                         ,B30:= NOT #GNC1 
+	                         ,B31:= #GNC1); 
+	                                           
+	        #GW2:="FC_PACKDWORD"(B0 := NOT #GNC2
+	                         ,B1 := #GNC2
+	                         ,B2 := NOT #GNC3
+	                         ,B3 := #GNC3
+	                         ,B4 := NOT #GNC4
+	                         ,B5 := #GNC4 
+	                         ,B6 := NOT #GNS
+	                         ,B7 := #GNS
+	                         ,B8 := #GSL
+	                         ,B9 := #GS2 
+	                         ,B10:= #GRX
+	                         ,B11:= #WO
+	                         ,B12:= #WC
+	                         ,B13:= #WS
+	                         ,B14:= #WMJ
+	                         ,B15:= #WU
+	                         ,B16:= 0
+	                         ,B17:= 0
+	                         ,B18:= 0
+	                         ,B19:= 0
+	                         ,B20:= 0
+	                         ,B21:= 0
+	                         ,B22:= 0
+	                         ,B23:= 0
+	                         ,B24:= 0
+	                         ,B25:= 0
+	                         ,B26:= 0
+	                         ,B27:= 0
+	                         ,B28:= 0
+	                         ,B29:= 0
+	                         ,B30:= 0
+	                         ,B31:= 0);
+	        //------------------- Шаг 13 ------------------
+	        //Определяем состояние задвижки
+	        IF #GF THEN 
+	            #ST:=12;
+	            ELSE
+	        IF #GRL OR #GRO THEN 
+	            #ST:=6;
+	        ELSE
+	            IF #GRL OR #GRC THEN 
+	                #ST:=10;
+	            ELSE
+	                IF #GI THEN 
+	                    #ST:=4;
+	                ELSE
+	                    IF #GC THEN 
+	                        #ST:=2;
+	                    ELSE
+	                        IF #GO THEN 
+	                            #ST:=8;
+	                        ELSE
+	                            IF #GX OR #GF THEN 
+	                                #ST:=12;
+	                            END_IF;
+	                        END_IF;
+	                    END_IF;
+	                END_IF;
+	            END_IF;
+	        END_IF;
+	        END_IF;
+	        IF #GMJ THEN
+	            #MODE:=1;
+	            #ST:=#ST+24;//в режиме имитации
+	        ELSE
+	        //местный режим
+	            IF (NOT #GMD AND NOT ( #GX OR #GX1 OR #GF OR #GNO OR #GNC OR #GNS)) AND #ST > 0 THEN 
+	                    #ST:=#ST+12;
+	            END_IF;
+	        //авария
+	            IF ( #GX OR  #GF OR #GNO OR #GNC OR #GNS) AND NOT #GX1 THEN 
+	                #ST:=#ST+36;
+	            END_IF;
+	        //sil2
+	            IF #GX1 THEN 
+	                #ST:=#ST+48;
+	            END_IF;
+	            IF (#GMD) THEN 
+	                #MODE:=2; 
+	            ELSE  
+	                #MODE:=0;
+	            END_IF;
+	        END_IF;     
+	//Таймер для сброса аварий
+	IF #GNC OR #GNC1 OR #GNC2 OR #GNC3 OR #GNC4 OR #GNO OR #GNO1 OR #GNO2 OR #GNO3 OR #GNO4 OR 
+	   #GX OR #GSL THEN
+	   #StartT14:=1;
+	END_IF;
+	
+END_FUNCTION_BLOCK
+
+DATA_BLOCK "DB_MOV_37"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+"FB_MOV01"
+
+BEGIN
+
+END_DATA_BLOCK
+

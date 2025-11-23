@@ -1,0 +1,537 @@
+﻿FUNCTION "FC_PACKDWORD" : DWord
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      B0 : Bool;
+      B1 : Bool;
+      B2 : Bool;
+      B3 : Bool;
+      B4 : Bool;
+      B5 : Bool;
+      B6 : Bool;
+      B7 : Bool;
+      B8 : Bool;
+      B9 : Bool;
+      B10 : Bool;
+      B11 : Bool;
+      B12 : Bool;
+      B13 : Bool;
+      B14 : Bool;
+      B15 : Bool;
+      B16 : Bool;
+      B17 : Bool;
+      B18 : Bool;
+      B19 : Bool;
+      B20 : Bool;
+      B21 : Bool;
+      B22 : Bool;
+      B23 : Bool;
+      B24 : Bool;
+      B25 : Bool;
+      B26 : Bool;
+      B27 : Bool;
+      B28 : Bool;
+      B29 : Bool;
+      B30 : Bool;
+      B31 : Bool;
+   END_VAR
+
+   VAR_TEMP 
+      GW : DWord;
+      INDEX : Int;
+      BS : Array[0..31] of Bool;
+   END_VAR
+
+
+BEGIN
+	;    
+	    #GW:=0; //GW IN TO ZERO
+	    #BS[0]:=#B0;
+	    #BS[1]:=#B1;
+	    #BS[2]:=#B2;
+	    #BS[3]:=#B3;
+	    #BS[4]:=#B4;
+	    #BS[5]:=#B5;
+	    #BS[6]:=#B6;
+	    #BS[7]:=#B7;
+	    #BS[8]:=#B8;
+	    #BS[9]:=#B9;
+	    #BS[10]:=#B10;
+	    #BS[11]:=#B11;
+	    #BS[12]:=#B12;
+	    #BS[13]:=#B13;
+	    #BS[14]:=#B14;
+	    #BS[15]:=#B15;
+	    #BS[16]:=#B16;
+	    #BS[17]:=#B17;
+	    #BS[18]:=#B18;
+	    #BS[19]:=#B19;
+	    #BS[20]:=#B20;
+	    #BS[21]:=#B21;
+	    #BS[22]:=#B22;
+	    #BS[23]:=#B23;
+	    #BS[24]:=#B24;
+	    #BS[25]:=#B25;
+	    #BS[26]:=#B26;
+	    #BS[27]:=#B27;
+	    #BS[28]:=#B28;
+	    #BS[29]:=#B29;
+	    #BS[30]:=#B30;
+	    #BS[31]:=#B31;
+	    FOR #INDEX := 0 TO 31 BY 1 DO
+	        IF #BS[#INDEX]THEN
+	            #GW:=#GW OR (SHL(IN:=DW#16#1,N:=#INDEX));  
+	        END_IF;
+	    END_FOR;       
+	        #FC_PACKDWORD := #GW; //RESULT
+	    
+END_FUNCTION
+
+FUNCTION_BLOCK "FB_ANA11"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      XQ11 : Int;   // Значение с поля
+      XG24 : Bool;
+      SFLT : Bool;
+   END_VAR
+
+   VAR_OUTPUT 
+      QV : Real;   // Показание датчика
+      GL2 : Bool;
+      GL1 : Bool;
+      GL0 : Bool;
+      GH0 : Bool;
+      GH1 : Bool;
+      GH2 : Bool;
+      GVI : Bool;
+      GVX : Bool;
+   END_VAR
+
+   VAR 
+      GVX2 : Bool;
+      GVX3 : Bool;
+      GVHL : Bool;
+      GMW : Bool;
+      GMJ : Bool;
+      GVX1 : Bool;
+      GMZ1 : Bool;
+      GMZ2 : Bool;
+      GMZ3 : Bool;
+      GMZ4 : Bool;
+      AVL1 : Real;
+      AVH1 : Real;
+      GW1 : DWord;
+      X_J : Real;
+      X11_J : Real;
+      J_Last_Val : Real;
+      PHA : Int;
+      ST : Int;
+      CMD : Int;
+      KMJN : Bool;
+      KMWN : Bool;
+      ST1 : Int;
+      AVJ : Real := 45.0;
+      AL1 : Real := 30.0;
+      AH1 : Real := 60.0;
+      KMW : Bool;
+      KMJ : Bool;
+      AVL3 : Real;
+      AVL2 : Real := 10.0;
+      AVH2 : Real := 80.0;
+      AVH3 : Real := 100.0;
+      AVZ3 : Real := 40.0;
+      KMZ : Int := 4;
+      CODCBR : Real := -27648.0;
+      CODL : Real;
+      GIS : Real;
+      GIS_GVHL : Real := 1.0;
+      AL0 : Real := 35.0;
+      AH0 : Real := 55.0;
+      DEADZONE : Real;
+   END_VAR
+
+
+BEGIN
+	 
+	
+	(*Шаг 1  Установка  режимов  обработки  и  замены  параметров *)  
+	CASE #KMZ OF
+	    1 : #GMZ1:=1; #GMZ2:=0; #GMZ3:=0; #GMZ4:=0;
+	    2 : #GMZ2:=1; #GMZ1:=0; #GMZ3:=0; #GMZ4:=0;
+	    3 : #GMZ3:=1; #GMZ1:=0; #GMZ2:=0; #GMZ4:=0;
+	    4 : #GMZ4:=1; #GMZ1:=0; #GMZ2:=0; #GMZ3:=0;
+	END_CASE; 
+	 
+	CASE #PHA OF  
+	    7:  #GMJ:=1; #KMJ:=1; #CMD:=0;  (* УСТАНОВИТЬ РЕЖИМ ИМИТАЦИИ *)             
+	    8:  #GMJ:=0; #KMJN:=1; #CMD:=0; (* CБРОСИТЬ РЕЖИМ ИМИТАЦИИ *)               
+	    9:  #GMW:=1; #KMW:=1; #CMD:=0;  (* УСТАНОВИТЬ РЕЖИМ МАСКИРОВАНИЯ *)              
+	    10: #GMW:=0; #KMWN:=1; #CMD:=0; (* СБРОСИТЬ РЕЖИМ МАСКИРОВАНИЯ *)  
+	END_CASE;     
+	#PHA:=0;
+	
+	(* ОБРАБОТКА АНАЛОГОВОГО СИГНАЛА *)
+	//X11_J:=X11;
+	#X11_J:=INT_TO_REAL((#XQ11));
+	#X_J:=(#X11_J-#CODL)/(27648.0-#CODL)*(#AVH3-#AVL3)+#AVL3;
+	IF (#X11_J < #CODL-#GIS_GVHL) OR (#X11_J > 27648.0+#GIS_GVHL) THEN #GVHL:=1; END_IF;
+	IF (#X11_J > #CODL) & (#X11_J < 27648.0-#CODL) THEN #GVHL:=0; END_IF;
+	IF NOT #GMW THEN
+	    #GVX1:=#SFLT;  (*Неисправность  S 800  *)
+	    #GVX2:=#XG24;   (*Неисправность датчика *)
+	    #GVX3:=(NOT #XG24)&(#X11_J<=#CODCBR OR #X11_J>=32704.0); (*Обрыв, короткое замыкание*) 
+	END_IF;    
+	
+	(* ОБРАБОТКА РЕЖИМА ИМИТАЦИИ *)
+	IF #GMJ THEN 
+	    #QV:=#AVJ;
+	    #GVX:=0;
+	    #ST1:=2;   (*СТАТУС - В норме*)  
+	ELSE
+	    IF #GMW THEN  (* ОБРАБОТКА РЕЖИМА МАСКИРОВАНИЯ *)
+	        #QV:=#X_J;
+	        IF (ABS(#QV)<#DEADZONE) THEN
+	             #QV:=0.0;
+	        END_IF;
+	        #GVX:=1;
+	        #ST1:=2; (*СТАТУС - В норме*)   
+	    ELSE    
+	        IF #GVX1 OR #GVX2 OR #GVX3 OR #GVHL THEN   (* ОБРАБОТКА НЕИСПРАВНОСТЕЙ И РЕЖИМОВ ЗАМЕН *)   
+	            #ST1:=16; (*СТАТУС - Значение не контролируется*)
+	            IF #GMZ1 THEN #QV:=#AL1+(#AH1-#AL1)/2.0; END_IF;
+	            IF #GMZ2 THEN #QV:=#J_Last_Val; END_IF;
+	            IF #GMZ3 THEN #QV:=#AVZ3; END_IF;
+	            IF #GMZ4 THEN #QV:=#X_J;
+	                IF (ABS(#QV)<#DEADZONE) THEN   
+	                    #QV:=0.0;
+	                END_IF;
+	            END_IF;
+	            #GVX:=1; 
+	        ELSE
+	            #J_Last_Val:=#QV;   (* ТЕКУЩЕЕ ЗНАЧЕНИЕ АНАЛОГОВОГО ПАРАМЕТРА *)
+	            #QV:=#X_J;
+	            IF (ABS(#QV)<#DEADZONE) THEN   
+	                #QV:=0.0;
+	            END_IF;
+	            #GVX:=0;
+	            #ST1:=2; (*СТАТУС - В норме*) 
+	        END_IF;            
+	    END_IF;
+	END_IF; 
+	
+	(*IF NOT GMW THEN 9_04_2006 init - Vitaliy *)     
+	(* ОБРАБОТКА УСТАВОК *)                 
+	#GH0:=(((#QV>#AH0) OR #GH0&(#QV>(#AH0-#GIS)))) AND ( NOT #GMW);  (*Максимальное допустимое*)
+	#GH1:=(((#QV>#AH1) OR #GH1&(#QV>(#AH1-#GIS)))) AND (NOT #GMW);   (*Максимальное предупредительное*)
+	#GH2:=(((#QV>#AVH2) OR #GH2&(#QV>(#AVH2-#GIS)))) AND (NOT #GMW); (*Максимальное Аварийное*)
+	#GL0:=(((#QV<#AL0) OR #GL0&(#QV<(#AL0+#GIS)))) AND ( NOT #GMW);  (*Минимальное допустимое*)
+	#GL1:=(((#QV<#AL1) OR #GL1&(#QV<(#AL1+#GIS)))) AND (NOT #GMW);   (*Минимальное предупредительное*)
+	#GL2:=(((#QV<#AVL2) OR #GL2&(#QV<(#AVL2+#GIS)))) AND (NOT #GMW); (*Минимальное Аварийное*)
+	#GVI:=NOT(#GH0 OR #GL0 OR #GMW);  
+	             
+	(* ФОРМИРОВАНИЕ ТЕКУЩЕГО СТАТУСА *)
+	IF NOT #GMW THEN    
+	    IF(#ST1<>16) THEN   (* ЕСЛИ ЗНАЧЕНИЕ КОНТРОЛИРУЕТСЯ *)         
+	        IF(#GH2) THEN
+	        #ST1:=4;    (*СТАТУС - Значение максимальное аварийное*)
+	        ELSE
+	            IF(#GH1) THEN
+	            #ST1:=6;  (*СТАТУС - Значение максимальное предупр*)         
+	            ELSE
+	                IF(#GH0) THEN
+	                #ST1:=8;      (*СТАТУС - Значение максимальное  допустимое*)     
+	                ELSE 
+	                    IF(#GL2) THEN
+	                    #ST1:=14;      (*СТАТУС - Значение минимальное  аварийное*)     
+	                    ELSE
+	                        IF(#GL1) THEN
+	                        #ST1:=12;      (*СТАТУС - Значение минимальное предельное *)               
+	                        ELSE
+	                            IF(#GL0) THEN
+	                            #ST1:=10;      (*СТАТУС - Значение минимальное допустимое *)               
+	                            END_IF;
+	                        END_IF;
+	                    END_IF; 
+	                END_IF;
+	            END_IF;
+	        END_IF;   
+	    END_IF;
+	END_IF;
+	#ST:=#ST1; 
+	(* УПАКОВКА GW1 *) 
+	#GW1:="FC_PACKDWORD"(  B0:=#KMJ, 
+	        B1:=#KMJN, 
+	        B2:=#KMW, 
+	        B3:=#KMWN,
+	        B4:=0, 
+	        B5:=0, 
+	        B6:=#GMJ, 
+	        B7:=NOT #GMJ, 
+	        B8:=#GMW, 
+	        B9:=NOT #GMW, 
+	        B10:=0, 
+	        B11:=0, 
+	        B12:=0, 
+	        B13:=0, 
+	        B14:=#GVX, 
+	        B15:=#GVX1, 
+	        B16:=#GVX2, 
+	        B17:=#GVX3, 
+	        B18:=#GVHL, 
+	        B19:=#GL2, 
+	        B20:=#GL1, 
+	        B21:=#GH1, 
+	        B22:=#GH2, 
+	        B23:=#GL0, 
+	        B24:=#GH0, 
+	        B25:=0, 
+	        B26:=0, 
+	        B27:=#GMZ1, 
+	        B28:=#GMZ2, 
+	        B29:=#GMZ3, 
+	        B30:=#GMZ4, 
+	        B31:=0);                                                 
+	
+	(* СЧЕТЧИК И СБРОС КОМАНД *)                                      
+	IF(#CMD<10 AND (#KMJ OR #KMJN OR #KMW OR #KMWN)) THEN  
+	    #CMD:=#CMD+1;
+	ELSE
+	    #KMJ:=0;
+	    #KMJN:=0;
+	    #KMW:=0;
+	    #KMWN:=0;        
+	END_IF;                                                                                        
+	
+	
+END_FUNCTION_BLOCK
+
+DATA_BLOCK "DB_FL_01_LS_450"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+"FB_ANA11"
+
+BEGIN
+
+END_DATA_BLOCK
+
+FUNCTION "FC_ANA_MULTI" : Void
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+
+BEGIN
+	
+	"DB_FL_01_LS_450"(
+	                  XQ11:="FL_01_LT_450_XQ11" 
+	                  //XG24:=false,
+	                  //SFLT:=false,
+	                  //QV=>_real_out_,
+	                  //GL2=>_bool_out_,
+	                  //GL1=>_bool_out_,
+	                  //GL0=>_bool_out_,
+	                  //GH0=>_bool_out_,
+	                  //GH1=>_bool_out_,
+	                  //GH2=>_bool_out_,
+	                  //GVI=>_bool_out_,
+	                  //GVX=>_bool_out_*)
+	);
+	
+	
+	
+	
+	
+	
+	
+	
+	(*//Давление в напорном трубопроводе №1 12% раствора коагулянта P301
+	"DB_PT_P301"(XQ11:="PT_P301_XQ11",      // Данные с поля
+	             //XG24:=false,
+	             //SFLT:=false,
+	             //QV=>_real_out_,
+	             //GL2=>_bool_out_,
+	             //GL1=>_bool_out_,
+	             //GL0=>_bool_out_,
+	             //GH0=>_bool_out_,
+	             //GH1=>_bool_out_,
+	             //GH2=>_bool_out_,
+	             //GVI=>_bool_out_,
+	             //GVX=>_bool_out_
+	             );
+	
+	
+	
+	
+	
+	(*
+	      "FC_ANA01"(XQ11:= "MP_01_PIT01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_PIT01);  //Давление масла к МНА1 (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_PIT02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_PIT02);  //Давление на входе МНА1 (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_PIT03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_PIT03);  //Давление на выходе МНА1 (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_VT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_VT_01);  //Вибрация подшипника 1 насоса (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_VT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_VT_02);  //Вибрация подшипника 2 насоса (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_VT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_VT_03);  //Вибрация подшипника 1 двигателя (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_VT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_VT_04);  //Вибрация подшипника 2 двигателя (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_02_PIT01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_PIT01);  //Давление масла к МНА2 (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_PIT02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_PIT02);  //Давление на входе МНА2 (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_PIT03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_PIT03);  //Давление на выходе МНА2 (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_VT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_VT_01);  //Вибрация подшипника 1 насоса (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_VT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_VT_02);  //Вибрация подшипника 2 насоса (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_VT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_VT_03);  //Вибрация подшипника 1 двигателя (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_VT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_VT_04);  //Вибрация подшипника 2 двигателя (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_00_LT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_LT_01);  //Уровень в емкости (Емкость сбора утечек 1)
+	      "FC_ANA01"(XQ11:= "MP_00_LT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_LT_02);  //Уровень в емкости (Емкость сбора утечек 2)
+	      "FC_ANA01"(XQ11:= "MP_00_LT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_LT_03);  //Уровень в емкости (Емкость сбора утечек 3)
+	      "MP_00_PT_09"(XQ11:= "MP_00_PT_09_XQ11", XG24:= FALSE, SFLT:= FALSE);  //Давление нефти на входе МНС т1 (Общее для МНС)
+	      "MP_00_PT_10"(XQ11:= "MP_00_PT_10_XQ11", XG24:= FALSE, SFLT:= FALSE);  //Давление нефти на входе МНС т2 (Общее для МНС)
+	      "MP_00_PT_05"(XQ11:= "MP_00_PT_05_XQ11", XG24:= FALSE, SFLT:= FALSE);  //Давление в коллекторе после РД т1 (Общее для МНС)
+	      "MP_00_PT_06"(XQ11:= "MP_00_PT_06_XQ11", XG24:= FALSE, SFLT:= FALSE);  //Давление в коллекторе после РД т2 (Общее для МНС)
+	      
+	      
+	      "DB_ANA_MULTI"."MP_00_PT_09".QV :="MP_00_PT_09".QV ;
+	 "DB_ANA_MULTI"."MP_00_PT_10".QV :="MP_00_PT_10".QV ;
+	  "DB_ANA_MULTI"."MP_00_PT_06".QV :="MP_00_PT_06".QV ;
+	   "DB_ANA_MULTI"."MP_00_PT_05".QV :="MP_00_PT_05".QV ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GL2 :="MP_00_PT_09".GL2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GL1 :="MP_00_PT_09".GL1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GH1 :="MP_00_PT_09".GH1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GH2 :="MP_00_PT_09".GH2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GVX :="MP_00_PT_09".GVX ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GVI :="MP_00_PT_09".GVI ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GVX2 :="MP_00_PT_09".GVX2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GVX3 :="MP_00_PT_09".GVX3 ;
+	        "DB_ANA_MULTI"."MP_00_PT_09".GVHL :="MP_00_PT_09".GVHL ;
+	        
+	               "DB_ANA_MULTI"."MP_00_PT_10".GL2 :="MP_00_PT_10".GL2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GL1 :="MP_00_PT_10".GL1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GH1 :="MP_00_PT_10".GH1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GH2 :="MP_00_PT_10".GH2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GVX :="MP_00_PT_10".GVX ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GVI :="MP_00_PT_10".GVI ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GVX2 :="MP_00_PT_10".GVX2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GVX3 :="MP_00_PT_10".GVX3 ;
+	        "DB_ANA_MULTI"."MP_00_PT_10".GVHL :="MP_00_PT_10".GVHL ;
+	        
+	               "DB_ANA_MULTI"."MP_00_PT_05".GL2 :="MP_00_PT_05".GL2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GL1 :="MP_00_PT_05".GL1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GH1 :="MP_00_PT_05".GH1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GH2 :="MP_00_PT_05".GH2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GVX :="MP_00_PT_05".GVX ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GVI :="MP_00_PT_05".GVI ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GVX2 :="MP_00_PT_05".GVX2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GVX3 :="MP_00_PT_05".GVX3 ;
+	        "DB_ANA_MULTI"."MP_00_PT_05".GVHL :="MP_00_PT_05".GVHL ;
+	        
+	               "DB_ANA_MULTI"."MP_00_PT_06".GL2 :="MP_00_PT_06".GL2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GL1 :="MP_00_PT_06".GL1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GH1 :="MP_00_PT_06".GH1 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GH2 :="MP_00_PT_06".GH2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GVX :="MP_00_PT_06".GVX ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GVI :="MP_00_PT_06".GVI ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GVX2 :="MP_00_PT_06".GVX2 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GVX3 :="MP_00_PT_06".GVX3 ;
+	        "DB_ANA_MULTI"."MP_00_PT_06".GVHL :="MP_00_PT_06".GVHL ;
+	
+	      
+	      
+	   
+	      "FC_ANA01"(XQ11:= "MP_00_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_PT_03);  //Давление в коллекторе до РД т1 (Общее для МНС)
+	      "FC_ANA01"(XQ11:= "MP_00_PT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_PT_04);  //Давление в коллекторе до РД т2 (Общее для МНС)
+	      "FC_ANA01"(XQ11:= "MP_00_PT_07_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_PT_07);  //Давление на выходе (Насос 1)
+	      "FC_ANA01"(XQ11:= "MP_00_PT_08_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_PT_08);  //Давление на выходе (Насос 2)
+	      "FC_ANA01"(XQ11:= "VI_03_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_03_PT_01);  //Давление приточного вентилятора 1 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VI_03_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_03_PT_02);  //Давление приточного вентилятора 2 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VI_03_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_03_PT_03);  //Давление приточных вентиляторов 1, 2 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VO_03_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VO_03_PT_01);  //Разряжение вытяжного вентилятора 1 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VO_03_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VO_03_PT_02);  //Разряжение вытяжного вентилятора 2 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VI_04_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_04_PT_01);  //Давление приточного вентилятора 1 (Электрозал)
+	      "FC_ANA01"(XQ11:= "VI_04_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_04_PT_02);  //Давление приточного вентилятора 2 (Электрозал)
+	      "FC_ANA01"(XQ11:= "VI_04_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_04_PT_03);  //Давление приточных вентиляторов 1, 2 (Электрозал)
+	      "FC_ANA01"(XQ11:= "PL_01_LT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_LT_01);  //Уровень в маслобаке 9 (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_LT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_LT_02);  //Уровень в маслобаке 10 (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_LT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_LT_03);  //Уровень масла в аккумулирующем баке (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_PT_01);  //Давление на выходе маслонасоса 9 (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_PT_02);  //Давление на выходе маслонасоса 10 (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_PT_03);  //Давление масла после фильтров (Маслосистема)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_01);  //Контроль напряжения Ввода от ВНС-8 Секция 1 Фаза А (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_02);  //Контроль напряжения Ввода от ВНС-8 Секция 1 Фаза В (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_03);  //Контроль напряжения Ввода от ВНС-8 Секция 1 Фаза С (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_04);  //Контроль напряжения Ввода от ВНС-8 Секция 2 Фаза А (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_05_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_05);  //Контроль напряжения Ввода от ВНС-8 Секция 2 Фаза В (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_ET_06_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_ET_06);  //Контроль напряжения Ввода от ВНС-8 Секция 2 Фаза С (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_01);  //Контроль тока Ввода от ВНС-8 Секция 1 Фаза А (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_02);  //Контроль тока Ввода от ВНС-8 Секция 1 Фаза B (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_03);  //Контроль тока Ввода от ВНС-8 Секция 1 Фаза С (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_04);  //Контроль тока Ввода от ВНС-8 Секция 2 Фаза А (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_05_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_05);  //Контроль тока Ввода от ВНС-8 Секция 2 Фаза B (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_06_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_06);  //Контроль тока Ввода от ВНС-8 Секция 2 Фаза С (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_07_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_07);  //Ток фидера Линия к КУ1 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_08_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_08);  //Ток фидера Эл. двигатель 2 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_09_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_09);  //Ток фидера 3 Резерв (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_10_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_10);  //Ток фидера СВ (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_11_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_11);  //Ток фидера Линия к КУ2 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_12_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_12);  //Ток фидера Эл. двигатель 1 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_13_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_13);  //Ток фидера 7 Резерв (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_14_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_14);  //Ток фидера Кульсары ВОС (ввод 1) (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_15_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_15);  //Ток фидера КТП МН Т-1 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_16_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_16);  //Ток фидера КТП ПП Т-1 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_17_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_17);  //Ток фидера НПС-3 ЭХЗ Кульсары (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_18_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_18);  //Ток фидера КТП10/0,4кВ (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_19_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_19);  //Ток фидера Опорная ЭХЗ Кульсары (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_20_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_20);  //Ток фидера КТП ПП Т-2 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_21_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_21);  //Ток фидера КТП МН Т-2 (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_22_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_22);  //Ток фидера Кульсары ВОС (ввод 2) (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_23_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_23);  //Ток фидера 17 Резерв (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_24_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_24);  //Ток электродвигателя 1 РД (КРУ)
+	      "FC_ANA01"(XQ11:= "ADS01_IT_25_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS01_IT_25);  //Ток электродвигателя 2 РД (КРУ)
+	      "FC_ANA01"(XQ11:= "TC_00_LT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".TC_00_LT_01);  //Уровень в резервуаре КНС (КНС)
+	      "FC_ANA01"(XQ11:= "TC_00_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".TC_00_PT_01);  //Давление на выходе насоса 1 КНС (КНС)
+	      "FC_ANA01"(XQ11:= "TC_00_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".TC_00_PT_02);  //Давление на выходе насоса 2 КНС (КНС)
+	      "FC_ANA01"(XQ11:= "BH_00_PT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".BH_00_PT_04);  //Давление в прямом трубопроводе сети (Котельная)
+	      "FC_ANA01"(XQ11:= "BH_00_PT_05_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".BH_00_PT_05);  //Давление в обратном трубопроводе сети (Котельная)
+	      "FC_ANA01"(XQ11:= "BH_00_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".BH_00_PT_03);  //Давление подпиточной воды (Котельная)
+	      "FC_ANA01"(XQ11:= "BH_00_LT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".BH_00_LT_01);  //Уровень подпиточной воды (Котельная)
+	      "FC_ANA01"(XQ11:= "BH_00_LT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".BH_00_LT_02);  //Уровень в топливной емкости (Котельная)
+	      "FC_ANA01"(XQ11:= "MF_01_PT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_01);  //Давление на входе фильтра №1
+	      "FC_ANA01"(XQ11:= "MF_01_PT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_02);  //Давление на выходе фильтра №1
+	      "FC_ANA01"(XQ11:= "MF_01_PT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_03);  //Давление на входе фильтра №2
+	      "FC_ANA01"(XQ11:= "MF_01_PT_04_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_04);  //Давление на выходе фильтра №2
+	      "FC_ANA01"(XQ11:= "MF_01_PT_05_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_05);  //Давление на входе фильтра №3
+	      "FC_ANA01"(XQ11:= "MF_01_PT_06_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MF_01_PT_06);  //Давление на выходе фильтра №3
+	      
+	      "FC_ANA01"(XQ11:= "MP_01_TT_09_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_TT_09);  //Температура подшипника 1 насоса (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_TT_10_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_TT_10);  //Температура подшипника 2 насоса (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_TT_13_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_TT_13);  //Температура корпуса насоса (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_TT_11_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_TT_11);  //Температура подшипника 1 двигателя (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_01_TT_12_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_01_TT_12);  //Температура подшипника 2 двигателя (МНА 1)
+	      "FC_ANA01"(XQ11:= "MP_02_TT_09_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_TT_09);  //Температура подшипника 1 насоса (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_TT_10_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_TT_10);  //Температура подшипника 2 насоса (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_TT_13_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_TT_13);  //Температура корпуса насоса (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_TT_11_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_TT_11);  //Температура подшипника 1 двигателя (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_02_TT_12_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_02_TT_12);  //Температура подшипника 2 двигателя (МНА 2)
+	      "FC_ANA01"(XQ11:= "MP_00_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_TT_01);  //Температура нефти (Общее для МНС)
+	      "FC_ANA01"(XQ11:= "VI_03_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_03_TT_01);  //Температура помещения т1 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VI_03_TT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_03_TT_02);  //Температура помещения т2 (Насосный зал)
+	      "FC_ANA01"(XQ11:= "VI_04_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_04_TT_01);  //Температура помещения т1 (Электрозал)
+	      "FC_ANA01"(XQ11:= "VI_04_TT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".VI_04_TT_02);  //Температура помещения т2 (Электрозал)
+	      "FC_ANA01"(XQ11:= "PL_01_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_TT_01);  //Температура масла до охладителей (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_TT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_TT_02);  //Температура масла после охладителей (Маслосистема)
+	      "FC_ANA01"(XQ11:= "PL_01_TT_03_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".PL_01_TT_03);  //Температура масла в аккумулирующем баке (Маслосистема)
+	      "FC_ANA01"(XQ11:= "ADS03_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".ADS03_TT_01);  //Температура помещения (КТП)
+	      "FC_ANA01"(XQ11:= "GRP_01_TT_01_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".GRP_01_TT_01);  //Температура газа в ГРПШ (Котельная)
+	      "FC_ANA01"(XQ11:= "MP_00_TT_02_XQ11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MP_00_TT_02);  //Температура емкости утечек МНС
+	
+	      "FC_ANA01"(XQ11:= "MC_01_MCV01_XL11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MC_01_MCV01);  //Температура газа в ГРПШ (Котельная)
+	      "FC_ANA01"(XQ11:= "MC_01_MCV02_XL11", XG24:= FALSE, SFLT:= FALSE, ANA:= "DB_ANA_MULTI".MC_01_MCV02);  //Температура емкости утечек МНС      
+	      
+	       "DB_S7ConANA".MP_00_PT_09:="DB_ANA_MULTI".MP_00_PT_09; //Давление нефти на входе МНС т1 (Общее для МНС)
+	       "DB_S7ConANA".MP_00_PT_10:="DB_ANA_MULTI".MP_00_PT_10; //Давление нефти на входе МНС т2 (Общее для МНС)
+	       "DB_S7ConANA".MP_00_TT_01:="DB_ANA_MULTI".MP_00_TT_01; //Температура нефти (Общее для МНС)
+	       "DB_S7ConANA".MP_00_PT_03:="DB_ANA_MULTI".MP_00_PT_03; //Давление в коллекторе до РД т1 (Общее для МНС)
+	       "DB_S7ConANA".MP_00_PT_04:="DB_ANA_MULTI".MP_00_PT_04; //Давление в коллекторе до РД т2 (Общее для МНС)
+	       "DB_S7ConANA".MP_00_PT_05:="DB_ANA_MULTI".MP_00_PT_05; //Давление в коллекторе после РД т1 (Общее для МНС)
+	       "DB_S7ConANA".MP_00_PT_06:="DB_ANA_MULTI".MP_00_PT_06; //Давление в коллекторе после РД т2 (Общее для МНС)
+	       "DB_S7ConANA".MC_01_MCV01:="DB_ANA_MULTI".MC_01_MCV01; //Положение заслонки №1
+	       "DB_S7ConANA".MC_01_MCV02:="DB_ANA_MULTI".MC_01_MCV02; //Положение заслонки №2      
+	*)
+ automatically inserted *)
+END_FUNCTION
+

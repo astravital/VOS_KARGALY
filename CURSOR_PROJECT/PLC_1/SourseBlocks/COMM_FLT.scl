@@ -1,0 +1,20 @@
+﻿ORGANIZATION_BLOCK "COMM_FLT"
+TITLE = "Communication Fault"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+   VAR_TEMP 
+      OB87_EV_CLASS : Byte;   // 16#39 Event class 3
+      OB87_FLT_ID : Byte;   // 16#XX, Fault identifcation code
+      OB87_PRIORITY : Byte;   // Priority of OB Execution
+      OB87_OB_NUMBR : Byte;   // 87 (Organization block 87, OB87)
+      OB87_RESERVED_1 : Byte;   // Reserved for system
+      OB87_RESERVED_2 : Byte;   // Reserved for system
+      OB87_RESERVED_3 : Word;   // Reserved for system
+      OB87_RESERVED_4 : DWord;   // Reserved for system
+      OB87_DATE_TIME : Date_And_Time;   // Date and time OB87 started
+   END_VAR
+
+
+BEGIN
+END_ORGANIZATION_BLOCK
+

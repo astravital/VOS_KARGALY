@@ -1,0 +1,29 @@
+﻿FUNCTION "FC_DKBIN" : Void
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.0
+   VAR_INPUT 
+      GW : Bool;
+      DRK : Int;
+   END_VAR
+
+   VAR_IN_OUT 
+      RES : Bool;
+      DK : Int;
+   END_VAR
+
+
+BEGIN
+	
+	    IF #DK>=#DRK THEN //ЕСЛИ ЗНАЧЕНИЕ ЦИКЛА БОЛЬШЕ ИЛИ РАВНО МАКСИМАЛЬНОЬУ КОЛИЧЕСТВУ ЦИКЛОВ ТО..
+	        #RES:=#GW;//ПРИСВОИТЬ РЕЗУЛЬТАТУ ЗНАЧЕНИЕ БИНАРНОГО СИГНАЛА
+	        #DK:=0;//ОБНУЛИТЬ ЗНАЧЕНИЕ ЦИКЛА
+	    ELSE
+	        IF #RES <> #GW THEN //ЕСЛИ ВЫХОД БИНАРНОГО СИГНАЛА НЕ СОВПАДАЕТ СО ЗНАЧЕНИЕМ БИНАРНОГО СИГНАЛА ТО...
+	            #DK:=#DK+1;//УВЕЛИЧИТЬ ЗНАЧЕНИЕ ЦИКЛА НА 1 И СОХРАНИТЬ
+	        ELSE //ИНАЧЕ ОБНУЛИТЬ ЗНАЧЕНИЕ ЦИКЛА
+	            #DK:=0;    
+	        END_IF;        
+	    END_IF;
+	
+END_FUNCTION
+

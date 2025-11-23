@@ -1,0 +1,21 @@
+﻿ORGANIZATION_BLOCK "PROG_ERR"
+TITLE = "Programming Error"
+{ S7_Optimized_Access := 'FALSE' }
+VERSION : 0.1
+   VAR_TEMP 
+      OB121_EV_CLASS : Byte;   // 16#25, Event class 2, Entering event state, Internal fault event
+      OB121_SW_FLT : Byte;   // 16#XX Software programming fault
+      OB121_PRIORITY : Byte;   // Priority of OB Execution
+      OB121_OB_NUMBR : Byte;   // 121 (Organization block 121, OB121)
+      OB121_BLK_TYPE : Byte;   // 16#88/8A/8B/8C/8E Type of block fault occured in
+      OB121_RESERVED_1 : Byte;   // Reserved for system
+      OB121_FLT_REG : Word;   // 16#XX Specific register that caused fault
+      OB121_BLK_NUM : Word;   // Number of block that programming fault occured in
+      OB121_PRG_ADDR : Word;   // Address in block where programming fault occured
+      OB121_DATE_TIME : Date_And_Time;   // Date and time OB121 started
+   END_VAR
+
+
+BEGIN
+END_ORGANIZATION_BLOCK
+
