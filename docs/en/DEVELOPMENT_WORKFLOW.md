@@ -60,3 +60,4 @@ The extracted XML files contain structured data about:
 | 2025-11-23 | Bug Fix | Fixed typo in `FB_MOV01.md` input table formatting. |
 | 2025-11-23 | Documentation | Clarified Limit Switch logic (NO vs NC) in `FB_MOV01.md`. |
 | 2025-11-23 | Documentation | Corrected limit switch fault detection logic - both X21=1 & X22=1 triggers fault after 2s (T_ON01). Added GSL alarm flag. |
+| 2025-11-23 | Documentation | Clarified NC contact wiring with inversion before FB inputs for fail-safe power loss detection. |
