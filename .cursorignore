@@ -1,0 +1,6 @@
+# Russian documentation - for user only, not included in AI context
+docs/ru/
+
+# TIA Portal V20 project - binary files, data will be exported to Cursor_project for processing
+TA_PORTAL_V20_PROJECT/
+

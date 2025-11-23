@@ -1,0 +1,5 @@
+# TIA Portal V20 project files
+# Note: This folder contains mostly binary files (.ap20, .db, .plf, etc.)
+# To update the latest version on GitHub, use: git add -f TA_PORTAL_V20_PROJECT/
+TA_PORTAL_V20_PROJECT/
+
