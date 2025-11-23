@@ -61,3 +61,4 @@ The extracted XML files contain structured data about:
 | 2025-11-23 | Documentation | Clarified Limit Switch logic (NO vs NC) in `FB_MOV01.md`. |
 | 2025-11-23 | Documentation | Corrected limit switch fault detection logic - both X21=1 & X22=1 triggers fault after 2s (T_ON01). Added GSL alarm flag. |
 | 2025-11-23 | Documentation | Added truth table for limit switch states (X21/X22 combinations) in `FB_MOV01.md`. |
+| 2025-11-23 | Git Commit | Committed and pushed PLC project structure: added source blocks, hardware structure, tags, and PLC_2 configuration (32 files, 8315 insertions). |
