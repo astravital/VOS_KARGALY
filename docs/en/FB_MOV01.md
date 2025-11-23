@@ -24,13 +24,25 @@ The `FB_MOV01` block controls a valve actuator. It processes open, close, and st
 | `SFLT` | Bool | System Fault (SIL Safety) | |
 | `PAZ` | Bool | Emergency Protection Trip | |
 
-**Note on Limit Switches:** The block expects **Normally Open (NO)** logic, where a Logic '1' means the position is reached.
-- `X21=0`, `X22=0` -> **Intermediate** Position (Valve in travel or Power Loss).
+**Note on Limit Switches:** The block supports both **Normally Open (NO)** and **Normally Closed (NC)** wiring:
+
+**Standard NO Logic (Active = 1):**
+- `X21=0`, `X22=0` -> **Intermediate** Position (Valve in travel).
 - `X21=1`, `X22=0` -> Fully **Open**.
 - `X21=0`, `X22=1` -> Fully **Closed**.
-- `X21=1`, `X22=1` -> **Fault** (Invalid State).
+- `X21=1`, `X22=1` -> **Fault** after 2s (`GX`, `GSL`) - Invalid state.
 
-If using **Normally Closed (NC)** contacts (Fail-Safe) where 0 = Active, the inputs must be inverted before this block or the logic modified.
+**Fail-Safe NC Logic (Normally Closed contacts, typically used to detect power loss):**
+- `X21=1`, `X22=1` -> **Intermediate** Position (Both switches NOT pressed, contacts closed).
+- `X21=0`, `X22=1` -> Fully **Open** (Open switch pressed, contact opened).
+- `X21=1`, `X22=0` -> Fully **Closed** (Closed switch pressed, contact opened).
+- `X21=0`, `X22=0` -> **Power Loss / Wire Break** (Shows as Intermediate initially, then may trigger other alarms).
+
+**Fault Detection:** If both `X21=1` AND `X22=1` persist for more than 2 seconds, the timer `T_ON01` triggers, setting:
+- `GX = 1` (Fault - Undefined State)
+- `GSL = 1` (Alarm - Both Limit Switches Active)
+
+This allows the block to detect wiring faults, stuck switches, or (when using NC contacts) simultaneous activation.
 
 ### Outputs
 
@@ -45,6 +57,7 @@ If using **Normally Closed (NC)** contacts (Fail-Safe) where 0 = Active, the inp
 | `GNO` | Bool | Alarm: General Not Opened (Fault) |
 | `GNC` | Bool | Alarm: General Not Closed (Fault) |
 | `GF` | Bool | General Fault |
+| `GSL` | Bool | Alarm: Both Limit Switches Active (Internal, packed in GW2) |
 | `WO` | Bool | Warning: Open Inhibited |
 | `WC` | Bool | Warning: Close Inhibited |
 | `GMD` | Bool | Status: Remote Mode Active |
@@ -86,9 +99,13 @@ The following diagram illustrates the basic transition logic between states:
 ```mermaid
 stateDiagram-v2
     [*] --> Unknown
-    Unknown --> Closed: X22 True & X21 False
-    Unknown --> Open: X21 True & X22 False
-    Unknown --> Intermediate: X21 False & X22 False
+    Unknown --> Closed: X22=1 & X21=0
+    Unknown --> Open: X21=1 & X22=0
+    Unknown --> Intermediate: X21=0 & X22=0
+    Unknown --> Fault: X21=1 & X22=1 (>2s)
+
+    Intermediate --> Open: Limit Reached
+    Intermediate --> Closed: Limit Reached
 
     Closed --> Opening: Open Cmd
     Opening --> Open: Limit Reached
@@ -98,8 +115,15 @@ stateDiagram-v2
     Closing --> Closed: Limit Reached
     Closing --> Fault: Timeout
 
-    state "Fault/Alarm" as Fault
-    Fault --> Unknown: Reset
+    state "Fault/Alarm (GX)" as Fault
+    Fault --> Unknown: Reset (KU)
+    
+    note right of Fault
+        GX=1 triggers when:
+        - Both X21 & X22 active >2s
+        - Motion timeout
+        - Other alarms
+    end note
 ```
 
 ## Status Words (GW1)
