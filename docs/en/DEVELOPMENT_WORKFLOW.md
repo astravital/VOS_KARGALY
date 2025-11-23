@@ -52,3 +52,8 @@ The extracted XML files contain structured data about:
 - Code comments and variable names are in Russian
 - Commits are made in English
 
+## Action Log
+
+| Date | Action | Description |
+|---|---|---|
+| 2025-11-23 | Documentation | Created documentation for `FB_MOV01.scl` including inputs, outputs, logic flow, and state diagrams. |
