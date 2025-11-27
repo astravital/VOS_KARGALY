@@ -2,6 +2,8 @@
 
 This function block implements the control logic for a Motor Operated Valve (MOV). It handles manual and automatic commands, monitors limit switches, manages faults, and supports a simulation mode.
 
+**Note:** This function block is taken from the WKKUL_SB&SCADA project from the S7-400 controller (МНС Кульсары).
+
 ## Description
 
 The `FB_MOV01` block controls a valve actuator. It processes open, close, and stop commands while monitoring feedback from limit switches (`X21`, `X22`) and fault signals (`X43`). It includes timers to detect motion failures (e.g., "Failed to Open", "Failed to Close") and generates status flags for HMI visualization.

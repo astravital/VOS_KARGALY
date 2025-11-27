@@ -44,6 +44,38 @@ The extracted XML files contain structured data about:
 - The `CURSOR_PROJECT/` folder contains the extracted data in text format (XML)
 - Extracted data can be processed and analyzed in Cursor IDE
 
+#### Working with HMI Tags for WinCC Advanced V20
+
+HMI tags are stored in Excel format with two sheets: `hmi_tags` and `multiplexing`. To work with these tags:
+
+**Process:**
+
+1. Extract Excel sheets to CSV format (done manually in Excel):
+   - Save `hmi_tags` sheet as `Hmi Tags.csv` (CSV UTF-8, semicolon delimiter)
+   - Save `multiplexing` sheet as `Multiplexing.csv` (CSV UTF-8, semicolon delimiter)
+
+2. Edit CSV files:
+   - CSV files are text-based and easy to edit
+   - Can be edited in any text editor or spreadsheet program
+   - Files are located in `CURSOR_PROJECT/examples/HMI_TAGS/`
+
+3. Convert CSV back to Excel:
+   - Use `scripts/hmi_tags_excel_converter.py` to convert CSV files back to Excel
+   - The script creates an Excel file with both sheets: `hmi_tags` and `multiplexing`
+
+4. Import to WinCC Advanced V20:
+   - Use the Excel file to import tags into WinCC Advanced V20 project
+
+**File Locations:**
+
+- Excel file: `CURSOR_PROJECT/examples/HMI_TAGS/HMITags.xlsx`
+- CSV files: `CURSOR_PROJECT/examples/HMI_TAGS/Hmi Tags.csv` and `Multiplexing.csv`
+
+**Tools:**
+
+- `scripts/hmi_tags_excel_converter.py` - Python script to convert between CSV and Excel formats
+- Requires: Python 3.7+, pandas, openpyxl (see `requirements.txt`)
+
 ## Notes
 
 - All documentation is written in English first
@@ -62,3 +94,6 @@ The extracted XML files contain structured data about:
 | 2025-11-23 | Documentation | Corrected limit switch fault detection logic - both X21=1 & X22=1 triggers fault after 2s (T_ON01). Added GSL alarm flag. |
 | 2025-11-23 | Documentation | Added truth table for limit switch states (X21/X22 combinations) in `FB_MOV01.md`. |
 | 2025-11-23 | Git Commit | Committed and pushed PLC project structure: added source blocks, hardware structure, tags, and PLC_2 configuration (32 files, 8315 insertions). |
+| 2025-01-XX | Documentation | Added note to `FB_MOV01.md` indicating that this function block is taken from the WKKUL_SB&SCADA project from the S7-400 controller (МНС Кульсары). |
+| 2025-01-XX | Script | Created `hmi_tags_excel_converter.py` script to convert HMI tags between CSV and Excel formats for WinCC Advanced V20. |
+| 2025-01-XX | Documentation | Added HMI tags workflow section to `DEVELOPMENT_WORKFLOW.md` and script documentation to `scripts.md`. |
