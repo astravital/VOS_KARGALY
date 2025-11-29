@@ -1,0 +1,8 @@
+HMI Tag name;Multiplex Tag;Index
+internal tags\MOV01_M_name;DB_MOV_37_name;0
+internal tags\MOV01_M_GW1;DB_MOV_37_GW1;0
+internal tags\MOV01_M_GW2;DB_MOV_37_GW2;0
+internal tags\MOV01_M_GW3;DB_MOV_37_GW3;0
+internal tags\MOV01_M_GW4;DB_MOV_37_GW4;0
+internal tags\MOV01_M_mess;DB_MOV_37_mess;0
+

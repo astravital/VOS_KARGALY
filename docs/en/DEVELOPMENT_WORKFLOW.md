@@ -43,6 +43,7 @@ The extracted XML files contain structured data about:
 - The `TA_PORTAL_V20_PROJECT/` folder is in `.gitignore` because it contains binary files
 - The `CURSOR_PROJECT/` folder contains the extracted data in text format (XML)
 - Extracted data can be processed and analyzed in Cursor IDE
+- The `CURSOR_PROJECT/examples/` folder contains example code and reference files. This codebase serves as the foundation on which changes will be made to the real project
 
 #### Working with HMI Tags for WinCC Advanced V20
 
@@ -97,3 +98,5 @@ HMI tags are stored in Excel format with two sheets: `hmi_tags` and `multiplexin
 | 2025-01-XX | Documentation | Added note to `FB_MOV01.md` indicating that this function block is taken from the WKKUL_SB&SCADA project from the S7-400 controller (МНС Кульсары). |
 | 2025-01-XX | Script | Created `hmi_tags_excel_converter.py` script to convert HMI tags between CSV and Excel formats for WinCC Advanced V20. |
 | 2025-01-XX | Documentation | Added HMI tags workflow section to `DEVELOPMENT_WORKFLOW.md` and script documentation to `scripts.md`. |
+| 2025-01-XX | Documentation | Added documentation about `CURSOR_PROJECT/examples/` folder purpose - contains example code and reference files that serve as the foundation for changes to the real project. |
+| 2025-11-29 | HMI Tags Creation | Created HMI tags for `MOV_37` in `ARM_1/HMI_TAGS/HMI_TAGS.csv` and created `multiplexing.csv` for faceplate mapping. |
