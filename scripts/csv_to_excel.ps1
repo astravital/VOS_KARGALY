@@ -49,6 +49,7 @@ try {
     # First sheet - HMI Tags
     $sheet1 = $workbook.Sheets.Item(1)
     $sheet1.Name = "hmi_tags"
+    $sheet1.Cells.NumberFormat = "@" # Set format to Text to prevent localization of True/False
     
     # Read CSV and write to sheet
     $hmiTagsContent = Get-Content $HmiTagsCsvPath -Encoding UTF8
@@ -67,6 +68,7 @@ try {
     # Add second sheet - Multiplexing
     $sheet2 = $workbook.Sheets.Add([System.Reflection.Missing]::Value, $sheet1)
     $sheet2.Name = "multiplexing"
+    $sheet2.Cells.NumberFormat = "@" # Set format to Text
     
     # Read CSV and write to sheet
     $multiplexingContent = Get-Content $MultiplexingCsvPath -Encoding UTF8

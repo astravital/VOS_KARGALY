@@ -61,7 +61,7 @@ HMI tags are stored in Excel format with two sheets: `hmi_tags` and `multiplexin
    - Files are located in `CURSOR_PROJECT/examples/HMI_TAGS/`
 
 3. Convert CSV back to Excel:
-   - Use `scripts/hmi_tags_excel_converter.py` to convert CSV files back to Excel
+   - Use `scripts/hmi_tags_excel_converter.py` (requires Python) or `scripts/csv_to_excel.ps1` (requires PowerShell) to convert CSV files back to Excel
    - The script creates an Excel file with both sheets: `hmi_tags` and `multiplexing`
 
 4. Import to WinCC Advanced V20:
@@ -74,8 +74,8 @@ HMI tags are stored in Excel format with two sheets: `hmi_tags` and `multiplexin
 
 **Tools:**
 
-- `scripts/hmi_tags_excel_converter.py` - Python script to convert between CSV and Excel formats
-- Requires: Python 3.7+, pandas, openpyxl (see `requirements.txt`)
+- `scripts/csv_to_excel.ps1` - PowerShell script to convert between CSV and Excel formats (uses Excel COM). Forces "Text" format for cells to prevent localization issues (e.g., False -> ЛОЖЬ).
+- `scripts/hmi_tags_excel_converter.py` - Python script to convert between CSV and Excel formats (requires Python pandas).
 
 ## Notes
 
@@ -100,3 +100,4 @@ HMI tags are stored in Excel format with two sheets: `hmi_tags` and `multiplexin
 | 2025-01-XX | Documentation | Added HMI tags workflow section to `DEVELOPMENT_WORKFLOW.md` and script documentation to `scripts.md`. |
 | 2025-01-XX | Documentation | Added documentation about `CURSOR_PROJECT/examples/` folder purpose - contains example code and reference files that serve as the foundation for changes to the real project. |
 | 2025-11-29 | HMI Tags Creation | Created HMI tags for `MOV_37` in `ARM_1/HMI_TAGS/HMI_TAGS.csv` and created `multiplexing.csv` for faceplate mapping. |
+| 2025-11-29 | Script Update | Created and ran `scripts/csv_to_excel.ps1` to generate `HMI_TAGS.xlsx`. Fixed an issue where English booleans ("False") were being localized to Russian ("ЛОЖЬ") by Excel COM, which causes issues in TIA Portal import. Forced "Text" format for all cells. |
